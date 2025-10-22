@@ -13,7 +13,7 @@ library(cowplot)
 
 pdf(width=14)
 
-data1 <- read_excel("UTI Model Bacterial and phage counts.xlsx", sheet = "MM02", range = "B2:E13", col_names = FALSE)
+data1 <- read_excel("data/UTI Model Bacterial and phage counts.xlsx", sheet = "MM02", range = "B2:E13", col_names = FALSE)
 
 data1 <- data1 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) %>%
     pivot_longer(cols=R1:R3, names_to="technical", names_transform=function(name) as.integer(sub("R([0-9]+)", "\\1", name)), values_to="value") %>%
@@ -24,7 +24,7 @@ data1 <- data1 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) 
 
 data1 <- data1 %>% group_by(name, biological) %>% summarize(value=mean(value), .groups="drop")
 
-data2 <- read_excel("UTI Model Bacterial and phage counts.xlsx", sheet = "MM02", range = "B21:E36", col_names = FALSE)
+data2 <- read_excel("data/UTI Model Bacterial and phage counts.xlsx", sheet = "MM02", range = "B21:E36", col_names = FALSE)
 
 data2 <- data2 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) %>%
     pivot_longer(cols=R1:R3, names_to="technical", names_transform=function(name) as.integer(sub("R([0-9]+)", "\\1", name)), values_to="value") %>%
@@ -35,7 +35,7 @@ data2 <- data2 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) 
 
 data2 <- data2 %>% group_by(name, biological) %>% summarize(value=mean(value), .groups="drop")
 
-data3 <- read_excel("UTI Model Bacterial and phage counts.xlsx", sheet = "P00", range = "B2:E13", col_names = FALSE)
+data3 <- read_excel("data/UTI Model Bacterial and phage counts.xlsx", sheet = "P00", range = "B2:E13", col_names = FALSE)
 
 data3 <- data3 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) %>%
     pivot_longer(cols=R1:R3, names_to="technical", names_transform=function(name) as.integer(sub("R([0-9]+)", "\\1", name)), values_to="value") %>%
@@ -46,7 +46,7 @@ data3 <- data3 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) 
 
 data3 <- data3 %>% group_by(name, biological) %>% summarize(value=mean(value), .groups="drop")
 
-data4 <- read_excel("UTI Model Bacterial and phage counts.xlsx", sheet = "P00", range = "B23:E36", col_names = FALSE)
+data4 <- read_excel("data/UTI Model Bacterial and phage counts.xlsx", sheet = "P00", range = "B23:E36", col_names = FALSE)
 
 data4 <- data4 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) %>%
     pivot_longer(cols=R1:R3, names_to="technical", names_transform=function(name) as.integer(sub("R([0-9]+)", "\\1", name)), values_to="value") %>%
@@ -57,13 +57,13 @@ data4 <- data4 %>% rename(name = `...1`, R1 = `...2`, R2 = `...3`, R3 = `...4`) 
 
 data4 <- data4 %>% group_by(name, biological) %>% summarize(value=mean(value), .groups="drop")
 
-data5 <- read_excel("LDH.xlsx", sheet = "LDH 24h", range = "B2:E5", col_names = FALSE)
+data5 <- read_excel("data/LDH.xlsx", sheet = "LDH 24h", range = "B2:E5", col_names = FALSE)
 
 data5 <- data5 %>% rename(name = `...1`, `LDH V1` = `...2`, `LDH V2` = `...3`, `LDH V3` = `...4`) %>%
     pivot_longer(cols=`LDH V1`:`LDH V3`, names_to="replicate", names_transform=function(name) as.integer(sub("LDH V([0-9]+)", "\\1", name)), values_to="value") %>%
     mutate(name = fct_relevel(fct_recode(name, `UPEC 8923 24h` = "UPEC 8923 24h",  `UPEC 8923 + MM02 24h` = "UPEC 8923 + MM02 24h", `MM02 24h` = "MM02 24h", `Cells only 24h` = "Cells only 24h"), "UPEC 8923 24h", "UPEC 8923 + MM02 24h", "MM02 24h", "Cells only 24h"))
 
-data6 <- read_excel("LDH.xlsx", sheet = "LDH 24h", range = "B7:E10", col_names = FALSE)
+data6 <- read_excel("data/LDH.xlsx", sheet = "LDH 24h", range = "B7:E10", col_names = FALSE)
 
 data6 <- data6 %>% rename(name = `...1`, `LDH V1` = `...2`, `LDH V2` = `...3`, `LDH V3` = `...4`) %>%
     pivot_longer(cols=`LDH V1`:`LDH V3`, names_to="replicate", names_transform=function(name) as.integer(sub("LDH V([0-9]+)", "\\1", name)), values_to="value") %>%
