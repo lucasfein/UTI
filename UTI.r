@@ -89,16 +89,16 @@ if (kruskal.test(value ~ name, data = data6)$p.value < 0.05) {
 }
 
 plot_grid(
-    ggplot(data1, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + labs(y="CFU/mL") + theme_bw() + theme(axis.title.x=element_blank()),
-    ggplot(data3, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + labs(y="CFU/mL") + theme_bw() + theme(axis.title.x=element_blank()),
+    ggplot(data1, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + labs(y="CFU/mL") + theme_bw() + theme(axis.title.x=element_blank()),
+    ggplot(data3, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + labs(y="CFU/mL") + theme_bw() + theme(axis.title.x=element_blank()),
     labels=c("A", "B"), align="v")
 
 plot_grid(
-    ggplot(data2, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + scale_y_continuous(labels=scales::label_number_auto()) + labs(y="PFU/mL") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 8923 + MM02 3h", end="NC", label="p < 0.01", y=175000), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
-    ggplot(data4, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + scale_y_continuous(labels=scales::label_number_auto()) + labs(y="PFU/mL") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 7958 + G10400 3h", end="NC", label="p < 0.01", y=3.5e05), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
+    ggplot(data2, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + scale_y_continuous(labels=scales::label_number_auto()) + labs(y="PFU/mL") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 8923 + MM02 3h", end="NC", label="p < 0.01", y=175000), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
+    ggplot(data4, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + scale_y_continuous(labels=scales::label_number_auto()) + labs(y="PFU/mL") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 7958 + G10400 3h", end="NC", label="p < 0.01", y=3.5e05), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
     labels=c("A", "B"), align="v")
 
 plot_grid(
-    ggplot(data5, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + labs(y="LDH (U/L)") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="MM02 24h", end="Cells only 24h", label="p = 0.01", y=150), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
-    ggplot(data6, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.4, height=0) + expand_limits(y=0) + labs(y="LDH (U/L)") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 7958 24h", end="UPEC 7958 + G10400 24h", label="p = 0.01", y=300), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
+    ggplot(data5, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + labs(y="LDH (U/L)") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="MM02 24h", end="Cells only 24h", label="p = 0.01", y=150), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
+    ggplot(data6, aes(x=name, y=value)) + geom_boxplot() + geom_jitter(width=0.35, height=0) + expand_limits(y=0) + labs(y="LDH (U/L)") + theme_bw() + theme(axis.title.x=element_blank()) + suppressWarnings(geom_signif(data = data.frame(start="UPEC 7958 24h", end="UPEC 7958 + G10400 24h", label="p = 0.01", y=300), aes(xmin = start, xmax = end, annotations = label, y_position=y), manual = TRUE, inherit.aes = FALSE)),
     labels=c("A", "B"), align="v")
