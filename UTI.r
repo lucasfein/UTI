@@ -69,22 +69,40 @@ data6 <- data6 %>% rename(name = `...1`, `LDH V1` = `...2`, `LDH V2` = `...3`, `
     pivot_longer(cols=`LDH V1`:`LDH V3`, names_to="replicate", names_transform=function(name) as.integer(sub("LDH V([0-9]+)", "\\1", name)), values_to="value") %>%
     mutate(name = fct_relevel(fct_recode(name, `UPEC 7958 24h` = "UPEC 7958", `UPEC 7958 + G10400 24h` = "UPEC 7958 + G10400", `G10400 24h` = "G10400 24h", `Cells only 24h` = "Cells only 24h"), "UPEC 7958 24h", "UPEC 7958 + G10400 24h", "G10400 24h", "Cells only 24h"))
 
-if (kruskal.test(value ~ name, data = data1)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data1)$p.value,
+        kruskal.test(value ~ name, data = data3)$p.value),
+        method="holm")[1] < 0.05) {
     dunn.test(data1 %>% pull(value), data1 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
-if (kruskal.test(value ~ name, data = data2)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data2)$p.value,
+        kruskal.test(value ~ name, data = data4)$p.value),
+        method="holm")[1] < 0.05) {
     dunn.test(data2 %>% pull(value), data2 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
-if (kruskal.test(value ~ name, data = data3)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data1)$p.value,
+        kruskal.test(value ~ name, data = data3)$p.value),
+        method="holm")[2] < 0.05) {
     dunn.test(data3 %>% pull(value), data3 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
-if (kruskal.test(value ~ name, data = data4)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data2)$p.value,
+        kruskal.test(value ~ name, data = data4)$p.value),
+        method="holm")[2] < 0.05) {
     dunn.test(data4 %>% pull(value), data4 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
-if (kruskal.test(value ~ name, data = data5)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data5)$p.value,
+        kruskal.test(value ~ name, data = data6)$p.value),
+        method="holm")[1] < 0.05) {
     dunn.test(data5 %>% pull(value), data5 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
-if (kruskal.test(value ~ name, data = data6)$p.value < 0.05) {
+if (p.adjust(c(
+        kruskal.test(value ~ name, data = data5)$p.value,
+        kruskal.test(value ~ name, data = data6)$p.value),
+        method="holm")[2] < 0.05) {
     dunn.test(data6 %>% pull(value), data6 %>% pull(name), method="holm", table=FALSE, list=TRUE)
 }
 
