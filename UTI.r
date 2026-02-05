@@ -14,6 +14,8 @@ library(patchwork)
 
 library(dunn.test)
 
+library(ggokabeito)
+
 data1 <- read_excel(
     "data/LDH.xlsx",
     sheet = "LDH 24h",
@@ -41,6 +43,14 @@ data1 <- read_excel(
             "Cells only 24h"
         )
     )
+
+dunn.test(
+    data1 %>% pull(value),
+    data1 %>% pull(name),
+    method = "holm",
+    list = TRUE,
+    altp = TRUE
+)
 
 data2 <- read_excel(
     "data/LDH.xlsx",
@@ -70,13 +80,6 @@ data2 <- read_excel(
         )
     )
 
-dunn.test(
-    data1 %>% pull(value),
-    data1 %>% pull(name),
-    method = "holm",
-    list = TRUE,
-    altp = TRUE
-)
 dunn.test(
     data2 %>% pull(value),
     data2 %>% pull(name),
@@ -116,7 +119,8 @@ dunn.test(
         annotations = "p = 0.01",
         size = 0.25,
         textsize = 9 * 0.8 / .pt
-    )) /
+    ) +
+    scale_fill_okabe_ito()) /
     (ggplot(data2, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
@@ -148,7 +152,8 @@ dunn.test(
             annotations = "p = 0.01",
             size = 0.25,
             textsize = 9 * 0.8 / .pt
-        )) +
+        ) +
+        scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
 
 data3 <- bind_rows(
@@ -181,6 +186,25 @@ data3 <- bind_rows(
         )
     )
 
+p.adjust(
+    c(
+        wilcox.test(
+            data3 %>% filter(name == "MM02 + UPEC 7958 3h") %>% pull(value),
+            data3 %>% filter(name == "MM02 cells only 3h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value,
+
+        wilcox.test(
+            data3 %>% filter(name == "MM02 + UPEC 7958 24h") %>% pull(value),
+            data3 %>% filter(name == "MM02 cells only 24h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value
+    ),
+    method = "holm"
+)
+
 data4 <- bind_rows(
     read_excel(
         "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -210,6 +234,25 @@ data4 <- bind_rows(
             "G10400 cells only 24h"
         )
     )
+
+p.adjust(
+    c(
+        wilcox.test(
+            data4 %>% filter(name == "G10400 + UPEC 8923 3h") %>% pull(value),
+            data4 %>% filter(name == "G10400 cells only 3h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value,
+
+        wilcox.test(
+            data4 %>% filter(name == "G10400 + UPEC 8923 24h") %>% pull(value),
+            data4 %>% filter(name == "G10400 cells only 24h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value
+    ),
+    method = "holm"
+)
 
 (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -241,7 +284,17 @@ data4 <- bind_rows(
         expand = expansion(mult = c(0, 0.1))
     ) +
     theme_bw(base_size = 9) +
-    theme(axis.title.x = element_blank(), legend.position = "none")) /
+    theme(axis.title.x = element_blank(), legend.position = "none") +
+    geom_signif(
+        comparisons = list(
+            c("MM02 + UPEC 7958 3h", "MM02 cells only 3h"),
+            c("MM02 + UPEC 7958 24h", "MM02 cells only 24h")
+        ),
+        annotations = c("p = 0.04", "p < 0.05"),
+        size = 0.25,
+        textsize = 9 * 0.8 / .pt
+    ) +
+    scale_fill_okabe_ito()) /
     (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
@@ -272,7 +325,17 @@ data4 <- bind_rows(
             expand = expansion(mult = c(0, 0.1))
         ) +
         theme_bw(base_size = 9) +
-        theme(axis.title.x = element_blank(), legend.position = "none")) +
+        theme(axis.title.x = element_blank(), legend.position = "none") +
+        geom_signif(
+            comparisons = list(
+                c("G10400 + UPEC 8923 3h", "G10400 cells only 3h"),
+                c("G10400 + UPEC 8923 24h", "G10400 cells only 24h")
+            ),
+            annotations = c("p = 0.04", "p < 0.05"),
+            size = 0.25,
+            textsize = 9 * 0.8 / .pt
+        ) +
+        scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
 
 data5 <- bind_rows(
@@ -305,13 +368,23 @@ data5 <- bind_rows(
         )
     )
 
-wilcox.test(
-    data5 %>% filter(name == "UPEC 1h") %>% pull(value),
-    data5 %>% filter(name == "MM02 after 1,5h") %>% pull(value)
-)
-wilcox.test(
-    data5 %>% filter(name == "UPEC 0,5h") %>% pull(value),
-    data5 %>% filter(name == "MM02 after 1h") %>% pull(value)
+p.adjust(
+    c(
+        wilcox.test(
+            data5 %>% filter(name == "UPEC 1h") %>% pull(value),
+            data5 %>% filter(name == "MM02 after 1,5h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value,
+
+        wilcox.test(
+            data5 %>% filter(name == "UPEC 0,5h") %>% pull(value),
+            data5 %>% filter(name == "MM02 after 1h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value
+    ),
+    method = "holm"
 )
 
 ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
@@ -341,7 +414,8 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
         expand = expansion(mult = c(0, 0.1))
     ) +
     theme_bw(base_size = 9) +
-    theme(axis.title.x = element_blank(), legend.position = "none")
+    theme(axis.title.x = element_blank(), legend.position = "none") +
+    scale_fill_okabe_ito()
 
 data6 <- read_excel(
     "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -362,6 +436,27 @@ data6 <- read_excel(
         )
     )
 
+p.adjust(
+    c(
+        wilcox.test(
+            data6 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
+            data6 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value,
+
+        wilcox.test(
+            data6 %>% filter(name == "Cells + UPEC 24h") %>% pull(value),
+            data6 %>%
+                filter(name == "Cells + UPEC + Phage 24/19h") %>%
+                pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value
+    ),
+    method = "holm"
+)
+
 data7 <- read_excel(
     "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
     sheet = "P00",
@@ -380,6 +475,26 @@ data7 <- read_excel(
             "Cells + UPEC + Phage 24/19 h"
         )
     )
+
+p.adjust(
+    c(
+        wilcox.test(
+            data7 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
+            data7 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value,
+        wilcox.test(
+            data7 %>% filter(name == "Cells + UPEC 24 h") %>% pull(value),
+            data7 %>%
+                filter(name == "Cells + UPEC + Phage 24/19 h") %>%
+                pull(value),
+            correct = FALSE,
+            exact = FALSE
+        )$p.value
+    ),
+    method = "holm"
+)
 
 (ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -408,7 +523,8 @@ data7 <- read_excel(
         expand = expansion(mult = c(0, 0.1))
     ) +
     theme_bw(base_size = 9) +
-    theme(axis.title.x = element_blank(), legend.position = "none")) /
+    theme(axis.title.x = element_blank(), legend.position = "none") +
+    scale_fill_okabe_ito()) /
     (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
@@ -436,5 +552,6 @@ data7 <- read_excel(
             expand = expansion(mult = c(0, 0.1))
         ) +
         theme_bw(base_size = 9) +
-        theme(axis.title.x = element_blank(), legend.position = "none")) +
+        theme(axis.title.x = element_blank(), legend.position = "none") +
+        scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
