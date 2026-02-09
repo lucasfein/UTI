@@ -164,7 +164,7 @@ data3 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:12)) %>%
+        select(1, 13) %>%
         rename(name = `...1`, value = `...13`),
     read_excel(
         "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -173,7 +173,7 @@ data3 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:12)) %>%
+        select(1, 13) %>%
         rename(name = `...1`, value = `...13`)
 ) %>%
     mutate(
@@ -213,7 +213,7 @@ data4 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:12)) %>%
+        select(1, 13) %>%
         rename(name = `...1`, value = `...13`),
     read_excel(
         "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -222,7 +222,7 @@ data4 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:12)) %>%
+        select(1, 13) %>%
         rename(name = `...1`, value = `...13`)
 ) %>%
     mutate(
@@ -272,7 +272,7 @@ p.adjust(
             ),
             "MM02 cells only 3h" = expression(Phi ~ "MM02 3h"),
             "MM02 + UPEC 7958 24h" = expression(
-                "UPEC 7958" ~ Phi ~ "MM02 24h"
+                "UPEC 7958 +" ~ Phi ~ "MM02 24h"
             ),
             "MM02 cells only 24h" = expression(Phi ~ "MM02 24h")
         )
@@ -313,7 +313,7 @@ p.adjust(
                 ),
                 "G10400 cells only 3h" = expression(Phi ~ "G10400 3h"),
                 "G10400 + UPEC 8923 24h" = expression(
-                    "UPEC 8923" ~ Phi ~ "G10400 24h"
+                    "UPEC 8923 +" ~ Phi ~ "G10400 24h"
                 ),
                 "G10400 cells only 24h" = expression(Phi ~ "G10400 24h")
             )
@@ -346,7 +346,7 @@ data5 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:5)) %>%
+        select(1, 6) %>%
         rename(name = `...1`, value = `...6`),
     read_excel(
         "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -355,7 +355,7 @@ data5 <- bind_rows(
         col_names = FALSE,
         .name_repair = "unique_quiet"
     ) %>%
-        select(-(2:5)) %>%
+        select(1, 6) %>%
         rename(name = `...1`, value = `...6`)
 ) %>%
     mutate(
@@ -424,7 +424,7 @@ data6 <- read_excel(
     col_names = FALSE,
     .name_repair = "unique_quiet"
 ) %>%
-    select(-(2:5)) %>%
+    select(1, 6) %>%
     rename(name = `...1`, value = `...6`) %>%
     mutate(
         name = fct_relevel(
@@ -464,7 +464,7 @@ data7 <- read_excel(
     col_names = FALSE,
     .name_repair = "unique_quiet"
 ) %>%
-    select(-(2:5)) %>%
+    select(1, 6) %>%
     rename(name = `...1`, value = `...6`) %>%
     mutate(
         name = fct_relevel(
