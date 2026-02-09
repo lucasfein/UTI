@@ -112,13 +112,13 @@ dunn.test(
         labels = label_number(),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    theme_bw(base_size = 9) +
+    theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     geom_signif(
         comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
         annotations = "p = 0.01",
         size = 0.25,
-        textsize = 9 * 0.8 / .pt
+        textsize = 10 * 0.8 / .pt
     ) +
     scale_fill_okabe_ito()) /
     (ggplot(data2, aes(name, value, fill = name)) +
@@ -145,13 +145,13 @@ dunn.test(
             labels = label_number(),
             expand = expansion(mult = c(0, 0.1))
         ) +
-        theme_bw(base_size = 9) +
+        theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         geom_signif(
             comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
             annotations = "p = 0.01",
             size = 0.25,
-            textsize = 9 * 0.8 / .pt
+            textsize = 10 * 0.8 / .pt
         ) +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
@@ -186,18 +186,48 @@ data3 <- bind_rows(
         )
     )
 
+wilcox.test(
+    data3 %>%
+        filter(name == "MM02 + UPEC 7958 3h") %>%
+        pull(value),
+    data3 %>%
+        filter(name == "MM02 cells only 3h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
+wilcox.test(
+    data3 %>%
+        filter(name == "MM02 + UPEC 7958 24h") %>%
+        pull(value),
+    data3 %>%
+        filter(name == "MM02 cells only 24h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
 p.adjust(
     c(
         wilcox.test(
-            data3 %>% filter(name == "MM02 + UPEC 7958 3h") %>% pull(value),
-            data3 %>% filter(name == "MM02 cells only 3h") %>% pull(value),
+            data3 %>%
+                filter(name == "MM02 + UPEC 7958 3h") %>%
+                pull(value),
+            data3 %>%
+                filter(name == "MM02 cells only 3h") %>%
+                pull(value),
             correct = FALSE,
             exact = FALSE
         )$p.value,
 
         wilcox.test(
-            data3 %>% filter(name == "MM02 + UPEC 7958 24h") %>% pull(value),
-            data3 %>% filter(name == "MM02 cells only 24h") %>% pull(value),
+            data3 %>%
+                filter(name == "MM02 + UPEC 7958 24h") %>%
+                pull(value),
+            data3 %>%
+                filter(name == "MM02 cells only 24h") %>%
+                pull(value),
             correct = FALSE,
             exact = FALSE
         )$p.value
@@ -235,24 +265,69 @@ data4 <- bind_rows(
         )
     )
 
+wilcox.test(
+    data4 %>%
+        filter(name == "G10400 + UPEC 8923 3h") %>%
+        pull(value),
+    data4 %>%
+        filter(name == "G10400 cells only 3h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
+wilcox.test(
+    data4 %>%
+        filter(name == "G10400 + UPEC 8923 24h") %>%
+        pull(value),
+    data4 %>%
+        filter(name == "G10400 cells only 24h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
 p.adjust(
     c(
         wilcox.test(
-            data4 %>% filter(name == "G10400 + UPEC 8923 3h") %>% pull(value),
-            data4 %>% filter(name == "G10400 cells only 3h") %>% pull(value),
+            data4 %>%
+                filter(name == "G10400 + UPEC 8923 3h") %>%
+                pull(value),
+            data4 %>%
+                filter(name == "G10400 cells only 3h") %>%
+                pull(value),
             correct = FALSE,
             exact = FALSE
         )$p.value,
-
         wilcox.test(
-            data4 %>% filter(name == "G10400 + UPEC 8923 24h") %>% pull(value),
-            data4 %>% filter(name == "G10400 cells only 24h") %>% pull(value),
+            data4 %>%
+                filter(name == "G10400 + UPEC 8923 24h") %>%
+                pull(value),
+            data4 %>%
+                filter(name == "G10400 cells only 24h") %>%
+                pull(value),
             correct = FALSE,
             exact = FALSE
         )$p.value
     ),
     method = "holm"
 )
+
+data3 <- data3 %>%
+    mutate(
+        group = case_when(
+            grepl("3h", name) ~ "1",
+            grepl("24h", name) ~ "2"
+        )
+    )
+
+data4 <- data4 %>%
+    mutate(
+        group = case_when(
+            grepl("3h", name) ~ "1",
+            grepl("24h", name) ~ "2"
+        )
+    )
 
 (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -263,18 +338,23 @@ p.adjust(
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    facet_grid(
+        cols = vars(group),
+        scales = "free_x",
+        labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
+    ) +
     expand_limits(y = 0) +
     ylab("PFU/ml") +
     scale_x_discrete(
         labels = c(
             "MM02 + UPEC 7958 3h" = expression(
-                "UPEC 7958 +" ~ Phi ~ "MM02 3h"
+                "UPEC 7958 +" ~ Phi ~ "MM02"
             ),
-            "MM02 cells only 3h" = expression(Phi ~ "MM02 3h"),
+            "MM02 cells only 3h" = expression(Phi ~ "MM02"),
             "MM02 + UPEC 7958 24h" = expression(
-                "UPEC 7958 +" ~ Phi ~ "MM02 24h"
+                "UPEC 7958 +" ~ Phi ~ "MM02"
             ),
-            "MM02 cells only 24h" = expression(Phi ~ "MM02 24h")
+            "MM02 cells only 24h" = expression(Phi ~ "MM02")
         )
     ) +
     scale_y_continuous(
@@ -283,17 +363,22 @@ p.adjust(
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    theme_bw(base_size = 9) +
+    theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
-    geom_signif(
-        comparisons = list(
-            c("MM02 + UPEC 7958 3h", "MM02 cells only 3h"),
-            c("MM02 + UPEC 7958 24h", "MM02 cells only 24h")
+    suppressWarnings(geom_signif(
+        data = data.frame(
+            group = c("1", "2"),
+            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
+            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
+            label = c("p = 0.04", "p < 0.05"),
+            y = 6.5
         ),
-        annotations = c("p = 0.04", "p < 0.05"),
+        aes(xmin = start, xmax = end, annotations = label, y_position = y),
+        manual = TRUE,
+        inherit.aes = FALSE,
         size = 0.25,
-        textsize = 9 * 0.8 / .pt
-    ) +
+        textsize = 10 * 0.8 / .pt
+    )) +
     scale_fill_okabe_ito()) /
     (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -304,18 +389,23 @@ p.adjust(
             linewidth = 0.25,
             show.legend = FALSE
         ) +
+        facet_grid(
+            cols = vars(group),
+            scales = "free_x",
+            labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
+        ) +
         expand_limits(y = 0) +
         ylab("PFU/ml") +
         scale_x_discrete(
             labels = c(
                 "G10400 + UPEC 8923 3h" = expression(
-                    "UPEC 8923 +" ~ Phi ~ "G10400 3h"
+                    "UPEC 8923 +" ~ Phi ~ "G10400"
                 ),
-                "G10400 cells only 3h" = expression(Phi ~ "G10400 3h"),
+                "G10400 cells only 3h" = expression(Phi ~ "G10400"),
                 "G10400 + UPEC 8923 24h" = expression(
-                    "UPEC 8923 +" ~ Phi ~ "G10400 24h"
+                    "UPEC 8923 +" ~ Phi ~ "G10400"
                 ),
-                "G10400 cells only 24h" = expression(Phi ~ "G10400 24h")
+                "G10400 cells only 24h" = expression(Phi ~ "G10400")
             )
         ) +
         scale_y_continuous(
@@ -324,17 +414,22 @@ p.adjust(
             labels = label_log(base = 10),
             expand = expansion(mult = c(0, 0.1))
         ) +
-        theme_bw(base_size = 9) +
+        theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
-        geom_signif(
-            comparisons = list(
-                c("G10400 + UPEC 8923 3h", "G10400 cells only 3h"),
-                c("G10400 + UPEC 8923 24h", "G10400 cells only 24h")
+        suppressWarnings(geom_signif(
+            data = data.frame(
+                group = c("1", "2"),
+                start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
+                end = c("G10400 cells only 3h", "G10400 cells only 24h"),
+                label = c("p = 0.04", "p < 0.05"),
+                y = 6.5
             ),
-            annotations = c("p = 0.04", "p < 0.05"),
+            aes(xmin = start, xmax = end, annotations = label, y_position = y),
+            manual = TRUE,
+            inherit.aes = FALSE,
             size = 0.25,
-            textsize = 9 * 0.8 / .pt
-        ) +
+            textsize = 10 * 0.8 / .pt
+        )) +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
 
@@ -368,6 +463,20 @@ data5 <- bind_rows(
         )
     )
 
+wilcox.test(
+    data5 %>% filter(name == "UPEC 1h") %>% pull(value),
+    data5 %>% filter(name == "MM02 after 1,5h") %>% pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
+wilcox.test(
+    data5 %>% filter(name == "UPEC 0,5h") %>% pull(value),
+    data5 %>% filter(name == "MM02 after 1h") %>% pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
 p.adjust(
     c(
         wilcox.test(
@@ -387,6 +496,14 @@ p.adjust(
     method = "holm"
 )
 
+data5 <- data5 %>%
+    mutate(
+        group = case_when(
+            grepl("UPEC 1h|MM02 after 1,5h", name) ~ "1",
+            grepl("UPEC 0,5h|MM02 after 1h", name) ~ "2"
+        )
+    )
+
 ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
@@ -396,16 +513,24 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    facet_grid(
+        cols = vars(group),
+        scales = "free_x",
+        labeller = as_labeller(c(
+            `1` = "1/24 h (1.5/24 h)",
+            `2` = "0.5/24 h (1/24 h)"
+        ))
+    ) +
     ylab("CFU/ml") +
     scale_x_discrete(
         labels = c(
-            "UPEC 1h" = "UPEC 8923 1/24h",
+            "UPEC 1h" = "UPEC 8923",
             "MM02 after 1,5h" = expression(
-                "UPEC 8923 1/24h +" ~ Phi ~ "MM02 1.5/24h"
+                "UPEC 8923 +" ~ Phi ~ "MM02"
             ),
-            "UPEC 0,5h" = "UPEC 8923 0.5/24h",
+            "UPEC 0,5h" = "UPEC 8923",
             "MM02 after 1h" = expression(
-                "UPEC 8923 0.5/24h +" ~ Phi ~ "MM02 1/24h"
+                "UPEC 8923 +" ~ Phi ~ "MM02"
             )
         )
     ) +
@@ -413,7 +538,7 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
         labels = label_number(),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    theme_bw(base_size = 9) +
+    theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     scale_fill_okabe_ito()
 
@@ -436,6 +561,22 @@ data6 <- read_excel(
         )
     )
 
+wilcox.test(
+    data6 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
+    data6 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
+wilcox.test(
+    data6 %>% filter(name == "Cells + UPEC 24h") %>% pull(value),
+    data6 %>%
+        filter(name == "Cells + UPEC + Phage 24/19h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
 p.adjust(
     c(
         wilcox.test(
@@ -444,7 +585,6 @@ p.adjust(
             correct = FALSE,
             exact = FALSE
         )$p.value,
-
         wilcox.test(
             data6 %>% filter(name == "Cells + UPEC 24h") %>% pull(value),
             data6 %>%
@@ -476,6 +616,22 @@ data7 <- read_excel(
         )
     )
 
+wilcox.test(
+    data7 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
+    data7 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
+wilcox.test(
+    data7 %>% filter(name == "Cells + UPEC 24 h") %>% pull(value),
+    data7 %>%
+        filter(name == "Cells + UPEC + Phage 24/19 h") %>%
+        pull(value),
+    correct = FALSE,
+    exact = FALSE
+)
+
 p.adjust(
     c(
         wilcox.test(
@@ -496,6 +652,22 @@ p.adjust(
     method = "holm"
 )
 
+data6 <- data6 %>%
+    mutate(
+        group = case_when(
+            grepl("3h", name) ~ "1",
+            grepl("24h|24/19h", name) ~ "2"
+        )
+    )
+
+data7 <- data7 %>%
+    mutate(
+        group = case_when(
+            grepl("3h", name) ~ "1",
+            grepl("24 h|24/19 h", name) ~ "2"
+        )
+    )
+
 (ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
@@ -505,16 +677,24 @@ p.adjust(
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    facet_grid(
+        cols = vars(group),
+        scales = "free_x",
+        labeller = as_labeller(c(
+            `1` = "3/5 h (3/5 h)",
+            `2` = "3/24 h (5/24 h)"
+        ))
+    ) +
     ylab("CFU/ml") +
     scale_x_discrete(
         labels = c(
-            "Cells + UPEC 3h" = "UPEC 8923 3/5h",
+            "Cells + UPEC 3h" = "UPEC 8923",
             "Cells + UPEC + Phage 3h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 3/5h"
+                "UPEC 8923 +" ~ Phi ~ "MM02"
             ),
-            "Cells + UPEC 24h" = "UPEC 8923 3/24h",
+            "Cells + UPEC 24h" = "UPEC 8923",
             "Cells + UPEC + Phage 24/19h" = expression(
-                "UPEC 8923 3/24 h +" ~ Phi ~ "MM02 5/24h"
+                "UPEC 8923 +" ~ Phi ~ "MM02"
             )
         )
     ) +
@@ -522,7 +702,7 @@ p.adjust(
         labels = label_number(),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    theme_bw(base_size = 9) +
+    theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     scale_fill_okabe_ito()) /
     (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
@@ -534,16 +714,24 @@ p.adjust(
             linewidth = 0.25,
             show.legend = FALSE
         ) +
+        facet_grid(
+            cols = vars(group),
+            scales = "free_x",
+            labeller = as_labeller(c(
+                `1` = "3/5 h (3/5 h)",
+                `2` = "3/24 h (5/24 h)"
+            ))
+        ) +
         ylab("CFU/ml") +
         scale_x_discrete(
             labels = c(
-                "Cells + UPEC 3h" = "UPEC 7958 3/5h",
+                "Cells + UPEC 3h" = "UPEC 7958",
                 "Cells + UPEC + Phage 3h" = expression(
-                    "UPEC 7958 +" ~ Phi ~ "G10400 3/5h"
+                    "UPEC 7958 +" ~ Phi ~ "G10400"
                 ),
-                "Cells + UPEC 24 h" = "UPEC 7958 3/24h",
+                "Cells + UPEC 24 h" = "UPEC 7958",
                 "Cells + UPEC + Phage 24/19 h" = expression(
-                    "UPEC 7958 3/24 h +" ~ Phi ~ "G10400 5/24h"
+                    "UPEC 7958  +" ~ Phi ~ "G10400"
                 )
             )
         ) +
@@ -551,7 +739,7 @@ p.adjust(
             labels = label_number(),
             expand = expansion(mult = c(0, 0.1))
         ) +
-        theme_bw(base_size = 9) +
+        theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
