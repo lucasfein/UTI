@@ -16,6 +16,8 @@ library(dunn.test)
 
 library(ggokabeito)
 
+library(coin)
+
 data1 <- read_excel(
     "data/LDH.xlsx",
     sheet = "LDH 24h",
@@ -186,51 +188,38 @@ data3 <- bind_rows(
         )
     )
 
-wilcox.test(
-    data3 %>%
-        filter(name == "MM02 + UPEC 7958 3h") %>%
-        pull(value),
-    data3 %>%
-        filter(name == "MM02 cells only 3h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+data3 %>%
+    filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h") %>%
+    count(name)
+
+result1 <- wilcox_test(
+    value ~ name,
+    data = data3 %>%
+        filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
 
-wilcox.test(
-    data3 %>%
-        filter(name == "MM02 + UPEC 7958 24h") %>%
-        pull(value),
-    data3 %>%
-        filter(name == "MM02 cells only 24h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+confint(result1)
+
+data3 %>%
+    filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h") %>%
+    count(name)
+
+result2 <- wilcox_test(
+    value ~ name,
+    data = data3 %>%
+        filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
+
+confint(result2)
 
 p.adjust(
     c(
-        wilcox.test(
-            data3 %>%
-                filter(name == "MM02 + UPEC 7958 3h") %>%
-                pull(value),
-            data3 %>%
-                filter(name == "MM02 cells only 3h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value,
-
-        wilcox.test(
-            data3 %>%
-                filter(name == "MM02 + UPEC 7958 24h") %>%
-                pull(value),
-            data3 %>%
-                filter(name == "MM02 cells only 24h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value
+        pvalue(result1),
+        pvalue(result2)
     ),
     method = "holm"
 )
@@ -265,50 +254,46 @@ data4 <- bind_rows(
         )
     )
 
-wilcox.test(
-    data4 %>%
-        filter(name == "G10400 + UPEC 8923 3h") %>%
-        pull(value),
-    data4 %>%
-        filter(name == "G10400 cells only 3h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+data4 %>%
+    filter(
+        name == "G10400 + UPEC 8923 3h" | name == "G10400 cells only 3h"
+    ) %>%
+    count(name)
+
+result1 <- wilcox_test(
+    value ~ name,
+    data = data4 %>%
+        filter(
+            name == "G10400 + UPEC 8923 3h" | name == "G10400 cells only 3h"
+        ),
+    distribution = "exact",
+    conf.int = TRUE
 )
 
-wilcox.test(
-    data4 %>%
-        filter(name == "G10400 + UPEC 8923 24h") %>%
-        pull(value),
-    data4 %>%
-        filter(name == "G10400 cells only 24h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+confint(result1)
+
+data4 %>%
+    filter(
+        name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
+    ) %>%
+    count(name)
+
+result2 <- wilcox_test(
+    value ~ name,
+    data = data4 %>%
+        filter(
+            name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
+        ),
+    distribution = "exact",
+    conf.int = TRUE
 )
+
+confint(result2)
 
 p.adjust(
     c(
-        wilcox.test(
-            data4 %>%
-                filter(name == "G10400 + UPEC 8923 3h") %>%
-                pull(value),
-            data4 %>%
-                filter(name == "G10400 cells only 3h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value,
-        wilcox.test(
-            data4 %>%
-                filter(name == "G10400 + UPEC 8923 24h") %>%
-                pull(value),
-            data4 %>%
-                filter(name == "G10400 cells only 24h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value
+        pvalue(result1),
+        pvalue(result2)
     ),
     method = "holm"
 )
@@ -365,20 +350,6 @@ data4 <- data4 %>%
     ) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
-    suppressWarnings(geom_signif(
-        data = data.frame(
-            group = c("1", "2"),
-            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
-            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
-            label = c("p = 0.04", "p < 0.05"),
-            y = 6.5
-        ),
-        aes(xmin = start, xmax = end, annotations = label, y_position = y),
-        manual = TRUE,
-        inherit.aes = FALSE,
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt
-    )) +
     scale_fill_okabe_ito()) /
     (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -416,20 +387,6 @@ data4 <- data4 %>%
         ) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
-        suppressWarnings(geom_signif(
-            data = data.frame(
-                group = c("1", "2"),
-                start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
-                end = c("G10400 cells only 3h", "G10400 cells only 24h"),
-                label = c("p = 0.04", "p < 0.05"),
-                y = 6.5
-            ),
-            aes(xmin = start, xmax = end, annotations = label, y_position = y),
-            manual = TRUE,
-            inherit.aes = FALSE,
-            size = 0.25,
-            textsize = 10 * 0.8 / .pt
-        )) +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
 
@@ -463,35 +420,38 @@ data5 <- bind_rows(
         )
     )
 
-wilcox.test(
-    data5 %>% filter(name == "UPEC 1h") %>% pull(value),
-    data5 %>% filter(name == "MM02 after 1,5h") %>% pull(value),
-    correct = FALSE,
-    exact = FALSE
+data5 %>%
+    filter(name == "UPEC 1h" | name == "MM02 after 1,5h") %>%
+    count(name)
+
+result1 <- wilcox_test(
+    value ~ name,
+    data = data5 %>%
+        filter(name == "UPEC 1h" | name == "MM02 after 1,5h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
 
-wilcox.test(
-    data5 %>% filter(name == "UPEC 0,5h") %>% pull(value),
-    data5 %>% filter(name == "MM02 after 1h") %>% pull(value),
-    correct = FALSE,
-    exact = FALSE
+confint(result1)
+
+data5 %>%
+    filter(name == "UPEC 0,5h" | name == "MM02 after 1h") %>%
+    count(name)
+
+result2 <- wilcox_test(
+    value ~ name,
+    data = data5 %>%
+        filter(name == "UPEC 0,5h" | name == "MM02 after 1h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
+
+confint(result2)
 
 p.adjust(
     c(
-        wilcox.test(
-            data5 %>% filter(name == "UPEC 1h") %>% pull(value),
-            data5 %>% filter(name == "MM02 after 1,5h") %>% pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value,
-
-        wilcox.test(
-            data5 %>% filter(name == "UPEC 0,5h") %>% pull(value),
-            data5 %>% filter(name == "MM02 after 1h") %>% pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value
+        pvalue(result1),
+        pvalue(result2)
     ),
     method = "holm"
 )
@@ -561,38 +521,42 @@ data6 <- read_excel(
         )
     )
 
-wilcox.test(
-    data6 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
-    data6 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
-    correct = FALSE,
-    exact = FALSE
+data6 %>%
+    filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h") %>%
+    count(name)
+
+result1 <- wilcox_test(
+    value ~ name,
+    data = data6 %>%
+        filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
 
-wilcox.test(
-    data6 %>% filter(name == "Cells + UPEC 24h") %>% pull(value),
-    data6 %>%
-        filter(name == "Cells + UPEC + Phage 24/19h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+confint(result1)
+
+data6 %>%
+    filter(
+        name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
+    ) %>%
+    count(name)
+
+result2 <- wilcox_test(
+    value ~ name,
+    data = data6 %>%
+        filter(
+            name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
+        ),
+    distribution = "exact",
+    conf.int = TRUE
 )
+
+confint(result2)
 
 p.adjust(
     c(
-        wilcox.test(
-            data6 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
-            data6 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value,
-        wilcox.test(
-            data6 %>% filter(name == "Cells + UPEC 24h") %>% pull(value),
-            data6 %>%
-                filter(name == "Cells + UPEC + Phage 24/19h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value
+        pvalue(result1),
+        pvalue(result2)
     ),
     method = "holm"
 )
@@ -615,39 +579,42 @@ data7 <- read_excel(
             "Cells + UPEC + Phage 24/19 h"
         )
     )
+data7 %>%
+    filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h") %>%
+    count(name)
 
-wilcox.test(
-    data7 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
-    data7 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
-    correct = FALSE,
-    exact = FALSE
+result1 <- wilcox_test(
+    value ~ name,
+    data = data7 %>%
+        filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h"),
+    distribution = "exact",
+    conf.int = TRUE
 )
 
-wilcox.test(
-    data7 %>% filter(name == "Cells + UPEC 24 h") %>% pull(value),
-    data7 %>%
-        filter(name == "Cells + UPEC + Phage 24/19 h") %>%
-        pull(value),
-    correct = FALSE,
-    exact = FALSE
+confint(result1)
+
+data7 %>%
+    filter(
+        name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
+    ) %>%
+    count(name)
+
+result2 <- wilcox_test(
+    value ~ name,
+    data = data7 %>%
+        filter(
+            name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
+        ),
+    distribution = "exact",
+    conf.int = TRUE
 )
+
+confint(result2)
 
 p.adjust(
     c(
-        wilcox.test(
-            data7 %>% filter(name == "Cells + UPEC 3h") %>% pull(value),
-            data7 %>% filter(name == "Cells + UPEC + Phage 3h") %>% pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value,
-        wilcox.test(
-            data7 %>% filter(name == "Cells + UPEC 24 h") %>% pull(value),
-            data7 %>%
-                filter(name == "Cells + UPEC + Phage 24/19 h") %>%
-                pull(value),
-            correct = FALSE,
-            exact = FALSE
-        )$p.value
+        pvalue(result1),
+        pvalue(result2)
     ),
     method = "holm"
 )
