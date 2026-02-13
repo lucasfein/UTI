@@ -99,7 +99,6 @@ dunn.test(
         linewidth = 0.25,
         show.legend = FALSE
     ) +
-    geom_jitter(width = 0.45, height = 0) +
     ylab("LDH (U/L)") +
     scale_x_discrete(
         labels = c(
@@ -133,7 +132,6 @@ dunn.test(
             linewidth = 0.25,
             show.legend = FALSE
         ) +
-        geom_jitter(width = 0.45, height = 0) +
         ylab("LDH (U/L)") +
         scale_x_discrete(
             labels = c(
@@ -195,7 +193,7 @@ data3 %>%
     count(name)
 
 result1 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data3 %>%
         filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h")
 )
@@ -209,7 +207,7 @@ data3 %>%
     count(name)
 
 result2 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data3 %>%
         filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h")
 )
@@ -263,7 +261,7 @@ data4 %>%
     count(name)
 
 result1 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data4 %>%
         filter(
             name == "G10400 + UPEC 8923 3h" | name == "G10400 cells only 3h"
@@ -281,7 +279,7 @@ data4 %>%
     count(name)
 
 result2 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data4 %>%
         filter(
             name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
@@ -325,7 +323,6 @@ data4 <- data4 %>%
         linewidth = 0.25,
         show.legend = FALSE
     ) +
-    geom_jitter(width = 0.45, height = 0) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
@@ -355,11 +352,11 @@ data4 <- data4 %>%
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
         data = data.frame(
-            group = "1",
-            start = "MM02 + UPEC 7958 3h",
-            end = "MM02 cells only 3h",
-            label = "p = 0.002",
-            y = 6.5
+            group = as.character(1:2),
+            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
+            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
+            label = c("p = 0.002", "p = 0.17"),
+            y = c(6.5, 6.5)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -377,7 +374,6 @@ data4 <- data4 %>%
             linewidth = 0.25,
             show.legend = FALSE
         ) +
-        geom_jitter(width = 0.45, height = 0) +
         facet_grid(
             cols = vars(group),
             scales = "free_x",
@@ -407,11 +403,11 @@ data4 <- data4 %>%
         theme(axis.title.x = element_blank(), legend.position = "none") +
         suppressWarnings(geom_signif(
             data = data.frame(
-                group = c("1", "2"),
+                group = as.character(1:2),
                 start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
                 end = c("G10400 cells only 3h", "G10400 cells only 24h"),
                 label = c("p < 0.001", "p < 0.001"),
-                y = 6.5
+                y = c(6.5, 6.5)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
@@ -457,7 +453,7 @@ data5 %>%
     count(name)
 
 result1 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data5 %>%
         filter(name == "UPEC 1h" | name == "MM02 after 1,5h")
 )
@@ -471,7 +467,7 @@ data5 %>%
     count(name)
 
 result2 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data5 %>%
         filter(name == "UPEC 0,5h" | name == "MM02 after 1h")
 )
@@ -505,7 +501,6 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
         linewidth = 0.25,
         show.legend = FALSE
     ) +
-    geom_jitter(width = 0.45, height = 0) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
@@ -535,6 +530,20 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
     ) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
+    suppressWarnings(geom_signif(
+        data = data.frame(
+            group = as.character(1:2),
+            start = c("UPEC 1h", "UPEC 0,5h"),
+            end = c("MM02 after 1,5h", "MM02 after 1h"),
+            label = c("p = 0.32", "p = 0.32"),
+            y = c(3.125, 3.125)
+        ),
+        aes(xmin = start, xmax = end, annotations = label, y_position = y),
+        manual = TRUE,
+        inherit.aes = FALSE,
+        size = 0.25,
+        textsize = 10 * 0.8 / .pt
+    )) +
     scale_fill_okabe_ito()
 
 data6 <- read_excel(
@@ -567,7 +576,7 @@ data6 %>%
     count(name)
 
 result2 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data6 %>%
         filter(
             name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
@@ -609,7 +618,7 @@ data7 %>%
     count(name)
 
 result2 <- t.test(
-    I(log10(value)) ~ name,
+    I(log10(value)) ~ fct_rev(name),
     data = data7 %>%
         filter(
             name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
@@ -647,7 +656,6 @@ data7 <- data7 %>%
         linewidth = 0.25,
         show.legend = FALSE
     ) +
-    geom_jitter(width = 0.45, height = 0) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
@@ -680,11 +688,11 @@ data7 <- data7 %>%
     scale_fill_okabe_ito() +
     suppressWarnings(geom_signif(
         data = data.frame(
-            group = "1",
-            start = "Cells + UPEC 3h",
-            end = "Cells + UPEC + Phage 3h",
-            label = "100%",
-            y = 4.75
+            group = as.character(1:2),
+            start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
+            end = c("Cells + UPEC + Phage 3h", "Cells + UPEC + Phage 24/19h"),
+            label = c("-100%", "p = 0.75"),
+            y = c(4.75, 4.75)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -701,7 +709,6 @@ data7 <- data7 %>%
             linewidth = 0.25,
             show.legend = FALSE
         ) +
-        geom_jitter(width = 0.45, height = 0) +
         facet_grid(
             cols = vars(group),
             scales = "free_x",
@@ -734,11 +741,14 @@ data7 <- data7 %>%
         scale_fill_okabe_ito() +
         suppressWarnings(geom_signif(
             data = data.frame(
-                group = "1",
-                start = "Cells + UPEC 3h",
-                end = "Cells + UPEC + Phage 3h",
-                label = "100%",
-                y = 4.75
+                group = as.character(1:2),
+                start = c("Cells + UPEC 3h", "Cells + UPEC 24 h"),
+                end = c(
+                    "Cells + UPEC + Phage 3h",
+                    "Cells + UPEC + Phage 24/19 h"
+                ),
+                label = c("-100%", "p = 0.90"),
+                y = c(4.75, 4.75)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
