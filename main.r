@@ -352,11 +352,11 @@ data4 <- data4 %>%
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
         data = data.frame(
-            group = as.character(1:2),
-            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
-            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
-            label = c("p = 0.002", "p = 0.17"),
-            y = c(6.5, 6.5)
+            group = "1",
+            start = "MM02 + UPEC 7958 3h",
+            end = "MM02 cells only 3h",
+            label = "p = 0.002",
+            y = c(6, 6)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -526,7 +526,7 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
         transform = transform_pseudo_log(base = 10),
         breaks = c(0, 10^3),
         labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.1))
+        expand = expansion(mult = c(0, 0.05))
     ) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
@@ -535,8 +535,8 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
             group = as.character(1:2),
             start = c("UPEC 1h", "UPEC 0,5h"),
             end = c("MM02 after 1,5h", "MM02 after 1h"),
-            label = c("p = 0.32", "p = 0.32"),
-            y = c(3.125, 3.125)
+            label = c("×0.74", "×0.64"),
+            y = c(3, 3)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -691,8 +691,8 @@ data7 <- data7 %>%
             group = as.character(1:2),
             start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
             end = c("Cells + UPEC + Phage 3h", "Cells + UPEC + Phage 24/19h"),
-            label = c("-100%", "p = 0.75"),
-            y = c(4.75, 4.75)
+            label = c("×0", "×1.38"),
+            y = c(4.5, 4.5)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -747,8 +747,8 @@ data7 <- data7 %>%
                     "Cells + UPEC + Phage 3h",
                     "Cells + UPEC + Phage 24/19 h"
                 ),
-                label = c("-100%", "p = 0.90"),
-                y = c(4.75, 4.75)
+                label = c("×0", "×0.92"),
+                y = c(4.5, 4.5)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
