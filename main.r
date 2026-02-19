@@ -118,7 +118,7 @@ dunn.test(
     theme(axis.title.x = element_blank(), legend.position = "none") +
     geom_signif(
         comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
-        annotations = "p = 0.01",
+        annotations = "*",
         size = 0.25,
         textsize = 10 * 0.8 / .pt
     ) +
@@ -151,7 +151,7 @@ dunn.test(
         theme(axis.title.x = element_blank(), legend.position = "none") +
         geom_signif(
             comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
-            annotations = "p = 0.01",
+            annotations = "*",
             size = 0.25,
             textsize = 10 * 0.8 / .pt
         ) +
@@ -355,7 +355,7 @@ data4 <- data4 %>%
             group = "1",
             start = "MM02 + UPEC 7958 3h",
             end = "MM02 cells only 3h",
-            label = "p = 0.002",
+            label = "**",
             y = c(6, 6)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
@@ -406,7 +406,7 @@ data4 <- data4 %>%
                 group = as.character(1:2),
                 start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
                 end = c("G10400 cells only 3h", "G10400 cells only 24h"),
-                label = c("p < 0.001", "p < 0.001"),
+                label = c("***", "***"),
                 y = c(6.5, 6.5)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
