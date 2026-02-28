@@ -46,6 +46,10 @@ data1 <- read_excel(
         )
     )
 
+data1 %>% count(name)
+
+data1 %>% group_by(name) %>% summarise(SD = sd(value))
+
 dunn.test(
     data1 %>% pull(value),
     data1 %>% pull(name),
@@ -82,6 +86,10 @@ data2 <- read_excel(
         )
     )
 
+data2 %>% count(name)
+
+data2 %>% group_by(name) %>% summarise(SD = sd(value))
+
 dunn.test(
     data2 %>% pull(value),
     data2 %>% pull(name),
@@ -93,12 +101,12 @@ dunn.test(
 (ggplot(data1, aes(name, value, fill = name)) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
-        fun.min = "min",
-        fun.max = "max",
+        fun.data = "mean_cl_normal",
         geom = "errorbar",
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    geom_jitter(position = position_jitter(height = 0, seed = 5)) +
     ylab("LDH (U/L)") +
     scale_x_discrete(
         labels = c(
@@ -112,7 +120,8 @@ dunn.test(
     ) +
     scale_y_continuous(
         labels = label_number(),
-        expand = expansion(mult = c(0, 0.1))
+        expand = expansion(mult = c(0, 0.1)),
+        breaks = seq(0, 1000, 200)
     ) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
@@ -120,18 +129,19 @@ dunn.test(
         comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
         annotations = "*",
         size = 0.25,
-        textsize = 10 * 0.8 / .pt
+        textsize = 10 * 0.8 / .pt,
+        y_position = 1000
     ) +
     scale_fill_okabe_ito()) /
     (ggplot(data2, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
-            fun.min = "min",
-            fun.max = "max",
+            fun.data = "mean_cl_normal",
             geom = "errorbar",
             linewidth = 0.25,
             show.legend = FALSE
         ) +
+        geom_jitter(position = position_jitter(height = 0, seed = 5)) +
         ylab("LDH (U/L)") +
         scale_x_discrete(
             labels = c(
@@ -145,7 +155,8 @@ dunn.test(
         ) +
         scale_y_continuous(
             labels = label_number(),
-            expand = expansion(mult = c(0, 0.1))
+            expand = expansion(mult = c(0, 0.1)),
+            breaks = seq(0, 500, 100)
         ) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
@@ -153,7 +164,8 @@ dunn.test(
             comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
             annotations = "*",
             size = 0.25,
-            textsize = 10 * 0.8 / .pt
+            textsize = 10 * 0.8 / .pt,
+            y_position = 500
         ) +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
@@ -192,6 +204,11 @@ data3 %>%
     filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h") %>%
     count(name)
 
+data3 %>%
+    filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
+
 result1 <- t.test(
     I(log10(value)) ~ fct_rev(name),
     data = data3 %>%
@@ -205,6 +222,12 @@ round(as.numeric(10^result1$conf.int), 2)
 data3 %>%
     filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h") %>%
     count(name)
+
+data3 %>%
+    filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
+
 
 result2 <- t.test(
     I(log10(value)) ~ fct_rev(name),
@@ -260,6 +283,13 @@ data4 %>%
     ) %>%
     count(name)
 
+data4 %>%
+    filter(
+        name == "G10400 + UPEC 8923 3h" | name == "G10400 cells only 3h"
+    ) %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
+
 result1 <- t.test(
     I(log10(value)) ~ fct_rev(name),
     data = data4 %>%
@@ -277,6 +307,13 @@ data4 %>%
         name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
     ) %>%
     count(name)
+
+data4 %>%
+    filter(
+        name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
+    ) %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
 
 result2 <- t.test(
     I(log10(value)) ~ fct_rev(name),
@@ -317,12 +354,12 @@ data4 <- data4 %>%
 (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
-        fun.min = "min",
-        fun.max = "max",
+        fun.data = "mean_cl_normal",
         geom = "errorbar",
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    geom_jitter(position = position_jitter(height = 0, seed = 1)) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
@@ -352,11 +389,11 @@ data4 <- data4 %>%
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
         data = data.frame(
-            group = "1",
-            start = "MM02 + UPEC 7958 3h",
-            end = "MM02 cells only 3h",
-            label = "**",
-            y = c(6, 6)
+            group = as.character(1:2),
+            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
+            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
+            label = c("**", "×0.20"),
+            y = c(7, 7)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -368,12 +405,12 @@ data4 <- data4 %>%
     (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
-            fun.min = "min",
-            fun.max = "max",
+            fun.data = "mean_cl_normal",
             geom = "errorbar",
             linewidth = 0.25,
             show.legend = FALSE
         ) +
+        geom_jitter(position = position_jitter(height = 0, seed = 3)) +
         facet_grid(
             cols = vars(group),
             scales = "free_x",
@@ -407,7 +444,7 @@ data4 <- data4 %>%
                 start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
                 end = c("G10400 cells only 3h", "G10400 cells only 24h"),
                 label = c("***", "***"),
-                y = c(6.5, 6.5)
+                y = c(7, 7)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
@@ -452,6 +489,11 @@ data5 %>%
     filter(name == "UPEC 1h" | name == "MM02 after 1,5h") %>%
     count(name)
 
+data5 %>%
+    filter(name == "UPEC 1h" | name == "MM02 after 1,5h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
+
 result1 <- t.test(
     I(log10(value)) ~ fct_rev(name),
     data = data5 %>%
@@ -465,6 +507,11 @@ round(as.numeric(10^result1$conf.int), 2)
 data5 %>%
     filter(name == "UPEC 0,5h" | name == "MM02 after 1h") %>%
     count(name)
+
+data5 %>%
+    filter(name == "UPEC 0,5h" | name == "MM02 after 1h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
 
 result2 <- t.test(
     I(log10(value)) ~ fct_rev(name),
@@ -495,36 +542,39 @@ data5 <- data5 %>%
 ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
-        fun.min = "min",
-        fun.max = "max",
+        fun.data = "mean_cl_normal",
         geom = "errorbar",
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    geom_jitter(position = position_jitter(height = 0, seed = 2)) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
-        labeller = as_labeller(c(
-            `1` = "1/24 h (1.5/24 h)",
-            `2` = "0.5/24 h (1/24 h)"
-        ))
+        labeller = as_labeller(
+            c(
+                `1` = "'1/24 h (' * varphi ~ '1.5/24 h)'",
+                `2` = "'0.5/24 h (' * varphi ~ '1/24 h)'"
+            ),
+            default = label_parsed
+        )
     ) +
     ylab("CFU/ml") +
     scale_x_discrete(
         labels = c(
             "UPEC 1h" = "UPEC 8923",
             "MM02 after 1,5h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02"
+                "UPEC 8923 +" ~ Phi ~ "MM02 1.5h PI"
             ),
             "UPEC 0,5h" = "UPEC 8923",
             "MM02 after 1h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02"
+                "UPEC 8923 +" ~ Phi ~ "MM02 1h PI"
             )
         )
     ) +
     scale_y_continuous(
         transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^3),
+        breaks = c(0, 10^1, 10^2, 10^3),
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.05))
     ) +
@@ -570,10 +620,22 @@ data6 %>%
     count(name)
 
 data6 %>%
+    filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
+
+data6 %>%
     filter(
         name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
     ) %>%
     count(name)
+
+data6 %>%
+    filter(
+        name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
+    ) %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
 
 result2 <- t.test(
     I(log10(value)) ~ fct_rev(name),
@@ -607,15 +669,28 @@ data7 <- read_excel(
             "Cells + UPEC + Phage 24/19 h"
         )
     )
+
 data7 %>%
     filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h") %>%
     count(name)
+
+data7 %>%
+    filter(name == "Cells + UPEC 3h" | name == "Cells + UPEC + Phage 3h") %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
 
 data7 %>%
     filter(
         name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
     ) %>%
     count(name)
+
+data7 %>%
+    filter(
+        name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
+    ) %>%
+    group_by(name) %>%
+    summarise(SD = sd(value))
 
 result2 <- t.test(
     I(log10(value)) ~ fct_rev(name),
@@ -650,39 +725,43 @@ data7 <- data7 %>%
 (ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
-        fun.min = "min",
-        fun.max = "max",
+        fun.data = "mean_cl_normal",
         geom = "errorbar",
         linewidth = 0.25,
         show.legend = FALSE
     ) +
+    geom_jitter(position = position_jitter(height = 0, seed = 5)) +
     facet_grid(
         cols = vars(group),
         scales = "free_x",
-        labeller = as_labeller(c(
-            `1` = "3/5 h (3/5 h)",
-            `2` = "3/24 h (5/24 h)"
-        ))
+        labeller = as_labeller(
+            c(
+                `1` = "'3/5 h (' * varphi ~ '3/5 h)'",
+                `2` = "'3/24 h (' * varphi ~ '5/24 h)'"
+            ),
+            default = label_parsed
+        )
     ) +
     ylab("CFU/ml") +
     scale_x_discrete(
         labels = c(
             "Cells + UPEC 3h" = "UPEC 8923",
             "Cells + UPEC + Phage 3h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02"
+                "UPEC 8923 +" ~ Phi ~ "MM02 SIM"
             ),
             "Cells + UPEC 24h" = "UPEC 8923",
             "Cells + UPEC + Phage 24/19h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02"
+                "UPEC 8923 +" ~ Phi ~ "MM02 5h PI"
             )
         )
     ) +
     scale_y_continuous(
         transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^3),
+        breaks = c(0, 10^3, 10^6),
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.1))
     ) +
+    expand_limits(y = 10^6) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     scale_fill_okabe_ito() +
@@ -692,7 +771,7 @@ data7 <- data7 %>%
             start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
             end = c("Cells + UPEC + Phage 3h", "Cells + UPEC + Phage 24/19h"),
             label = c("×0", "×1.38"),
-            y = c(4.5, 4.5)
+            y = c(5.25, 5.25)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -703,39 +782,43 @@ data7 <- data7 %>%
     (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
-            fun.min = "min",
-            fun.max = "max",
+            fun.data = "mean_cl_normal",
             geom = "errorbar",
             linewidth = 0.25,
             show.legend = FALSE
         ) +
+        geom_jitter(position = position_jitter(height = 0, seed = 5)) +
         facet_grid(
             cols = vars(group),
             scales = "free_x",
-            labeller = as_labeller(c(
-                `1` = "3/5 h (3/5 h)",
-                `2` = "3/24 h (5/24 h)"
-            ))
+            labeller = as_labeller(
+                c(
+                    `1` = "'3/5 h (' * varphi ~ '3/5 h)'",
+                    `2` = "'3/24 h (' * varphi ~ '5/24 h)'"
+                ),
+                default = label_parsed
+            )
         ) +
         ylab("CFU/ml") +
         scale_x_discrete(
             labels = c(
                 "Cells + UPEC 3h" = "UPEC 7958",
                 "Cells + UPEC + Phage 3h" = expression(
-                    "UPEC 7958 +" ~ Phi ~ "G10400"
+                    "UPEC 7958 +" ~ Phi ~ "G10400 SIM"
                 ),
                 "Cells + UPEC 24 h" = "UPEC 7958",
                 "Cells + UPEC + Phage 24/19 h" = expression(
-                    "UPEC 7958  +" ~ Phi ~ "G10400"
+                    "UPEC 7958  +" ~ Phi ~ "G10400 5h PI"
                 )
             )
         ) +
         scale_y_continuous(
             transform = transform_pseudo_log(base = 10),
-            breaks = c(0, 10^3),
+            breaks = c(0, 10^3, 10^6),
             labels = label_log(base = 10),
             expand = expansion(mult = c(0, 0.1))
         ) +
+        expand_limits(y = 10^6) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         scale_fill_okabe_ito() +
@@ -748,7 +831,7 @@ data7 <- data7 %>%
                     "Cells + UPEC + Phage 24/19 h"
                 ),
                 label = c("×0", "×0.92"),
-                y = c(4.5, 4.5)
+                y = c(5.25, 5.25)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,

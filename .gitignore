@@ -1,4 +1,9 @@
 data/LDH.xlsx
 data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx
+data/Virucide excel.xlsx
+
+# PDF
 Rplots.pdf
-Rplots-*.png
+
+# PNG
+Rplots-[0-9]*.png
