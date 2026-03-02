@@ -581,11 +581,11 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
     ) +
     scale_y_continuous(
         transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^3, 10^6),
+        breaks = c(0, 10^2, 10^4),
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    expand_limits(y = 10^6.5) +
+    expand_limits(y = 10^4.5) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
@@ -594,7 +594,7 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
             start = c("UPEC 1h", "UPEC 0,5h"),
             end = c("MM02 after 1,5h", "MM02 after 1h"),
             label = c("×0.74", "×0.64"),
-            y = c(6.5, 6.5),
+            y = c(4.5, 4.5),
             tip_length = 0.025
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
