@@ -121,8 +121,9 @@ dunn.test(
     scale_y_continuous(
         labels = label_number(),
         expand = expansion(mult = c(0, 0.1)),
-        breaks = seq(0, 1000, 200)
+        breaks = seq(0, 1000, 250)
     ) +
+    expand_limits(y = 1000) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     geom_signif(
@@ -130,7 +131,8 @@ dunn.test(
         annotations = "*",
         size = 0.25,
         textsize = 10 * 0.8 / .pt,
-        y_position = 1000
+        y_position = 1000,
+        tip_length = 0.025
     ) +
     scale_fill_okabe_ito()) /
     (ggplot(data2, aes(name, value, fill = name)) +
@@ -156,8 +158,9 @@ dunn.test(
         scale_y_continuous(
             labels = label_number(),
             expand = expansion(mult = c(0, 0.1)),
-            breaks = seq(0, 500, 100)
+            breaks = seq(0, 1000, 250)
         ) +
+        expand_limits(y = 1000) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         geom_signif(
@@ -165,7 +168,8 @@ dunn.test(
             annotations = "*",
             size = 0.25,
             textsize = 10 * 0.8 / .pt,
-            y_position = 500
+            y_position = 1000,
+            tip_length = 0.025
         ) +
         scale_fill_okabe_ito()) +
     plot_annotation(tag_levels = "A")
@@ -385,15 +389,17 @@ data4 <- data4 %>%
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.1))
     ) +
+    expand_limits(y = 10^6.5) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
         data = data.frame(
-            group = as.character(1:2),
-            start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
-            end = c("MM02 cells only 3h", "MM02 cells only 24h"),
-            label = c("**", "×0.20"),
-            y = c(7, 7)
+            group = as.character(1),
+            start = "MM02 + UPEC 7958 3h",
+            end = "MM02 cells only 3h",
+            label = "**",
+            y = 6.5,
+            tip_length = 0.025
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -416,7 +422,6 @@ data4 <- data4 %>%
             scales = "free_x",
             labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
         ) +
-        expand_limits(y = 0) +
         ylab("PFU/ml") +
         scale_x_discrete(
             labels = c(
@@ -436,6 +441,7 @@ data4 <- data4 %>%
             labels = label_log(base = 10),
             expand = expansion(mult = c(0, 0.1))
         ) +
+        expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         suppressWarnings(geom_signif(
@@ -444,7 +450,8 @@ data4 <- data4 %>%
                 start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
                 end = c("G10400 cells only 3h", "G10400 cells only 24h"),
                 label = c("***", "***"),
-                y = c(7, 7)
+                y = c(6.5, 6.5),
+                tip_length = 0.025
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
@@ -574,10 +581,11 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
     ) +
     scale_y_continuous(
         transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^1, 10^2, 10^3),
+        breaks = c(0, 10^3, 10^6),
         labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.05))
+        expand = expansion(mult = c(0, 0.1))
     ) +
+    expand_limits(y = 10^6.5) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     suppressWarnings(geom_signif(
@@ -586,7 +594,8 @@ ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
             start = c("UPEC 1h", "UPEC 0,5h"),
             end = c("MM02 after 1,5h", "MM02 after 1h"),
             label = c("×0.74", "×0.64"),
-            y = c(3, 3)
+            y = c(6.5, 6.5),
+            tip_length = 0.025
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -761,7 +770,7 @@ data7 <- data7 %>%
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.1))
     ) +
-    expand_limits(y = 10^6) +
+    expand_limits(y = 10^6.5) +
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank(), legend.position = "none") +
     scale_fill_okabe_ito() +
@@ -771,7 +780,8 @@ data7 <- data7 %>%
             start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
             end = c("Cells + UPEC + Phage 3h", "Cells + UPEC + Phage 24/19h"),
             label = c("×0", "×1.38"),
-            y = c(5.25, 5.25)
+            y = c(6.5, 6.5),
+            tip_length = 0.025
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
@@ -818,7 +828,7 @@ data7 <- data7 %>%
             labels = label_log(base = 10),
             expand = expansion(mult = c(0, 0.1))
         ) +
-        expand_limits(y = 10^6) +
+        expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
         theme(axis.title.x = element_blank(), legend.position = "none") +
         scale_fill_okabe_ito() +
@@ -831,7 +841,8 @@ data7 <- data7 %>%
                     "Cells + UPEC + Phage 24/19 h"
                 ),
                 label = c("×0", "×0.92"),
-                y = c(5.25, 5.25)
+                y = c(6.5, 6.5),
+                tip_length = 0.025
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,

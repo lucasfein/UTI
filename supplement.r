@@ -116,7 +116,9 @@ ggplot(data, aes(group, value, fill = group)) +
         labels = label_log(base = 10),
         expand = expansion(mult = c(0, 0.05))
     ) +
+    labs(y = "PFU/ml") +
     theme_bw(base_size = 10) +
+    theme(axis.title.x = element_blank()) +
     guides(fill = "none") +
     scale_fill_okabe_ito() +
     suppressWarnings(geom_signif(
