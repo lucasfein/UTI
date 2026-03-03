@@ -18,6 +18,9 @@ library(ggokabeito)
 
 library(coin)
 
+library(ragg)
+library(ggtext)
+
 data1 <- read_excel(
     "data/LDH.xlsx",
     sheet = "LDH 24h",
@@ -98,44 +101,9 @@ dunn.test(
     altp = TRUE
 )
 
-(ggplot(data1, aes(name, value, fill = name)) +
-    stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
-    stat_summary(
-        fun.data = "mean_cl_normal",
-        geom = "errorbar",
-        linewidth = 0.25,
-        show.legend = FALSE
-    ) +
-    geom_jitter(position = position_jitter(height = 0, seed = 5)) +
-    ylab("LDH (U/L)") +
-    scale_x_discrete(
-        labels = c(
-            "UPEC 8923 24h" = "UPEC 8923 24h",
-            "UPEC 8923 + MM02 24h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 24h"
-            ),
-            "MM02 24h" = expression(Phi ~ "MM02 24h"),
-            "Cells only 24h" = "Cells only 24h"
-        )
-    ) +
-    scale_y_continuous(
-        labels = label_number(),
-        expand = expansion(mult = c(0, 0.1)),
-        breaks = seq(0, 1000, 250)
-    ) +
-    expand_limits(y = 1000) +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank(), legend.position = "none") +
-    geom_signif(
-        comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
-        annotations = "*",
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt,
-        y_position = 1000,
-        tip_length = 0.025
-    ) +
-    scale_fill_okabe_ito()) /
-    (ggplot(data2, aes(name, value, fill = name)) +
+ggsave(
+    "Rplots-1.png",
+    (ggplot(data1, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -147,11 +115,9 @@ dunn.test(
         ylab("LDH (U/L)") +
         scale_x_discrete(
             labels = c(
-                "UPEC 7958" = "UPEC 7958 24h",
-                "UPEC 7958 + G10400" = expression(
-                    "UPEC 7958 +" ~ Phi ~ "G10400 24h"
-                ),
-                "G10400 24h" = expression(Phi ~ "G10400 24h"),
+                "UPEC 8923 24h" = "UPEC 8923 24h",
+                "UPEC 8923 + MM02 24h" = "UPEC 8923 + &Phi; MM02 24h",
+                "MM02 24h" = "&Phi; MM02 24h",
                 "Cells only 24h" = "Cells only 24h"
             )
         ) +
@@ -162,17 +128,66 @@ dunn.test(
         ) +
         expand_limits(y = 1000) +
         theme_bw(base_size = 10) +
-        theme(axis.title.x = element_blank(), legend.position = "none") +
+        theme(
+            axis.title.x = element_blank(),
+            legend.position = "none",
+            axis.text.x = element_markdown()
+        ) +
         geom_signif(
-            comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
+            comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
             annotations = "*",
             size = 0.25,
             textsize = 10 * 0.8 / .pt,
             y_position = 1000,
             tip_length = 0.025
         ) +
-        scale_fill_okabe_ito()) +
-    plot_annotation(tag_levels = "A")
+        scale_fill_okabe_ito()) /
+        (ggplot(data2, aes(name, value, fill = name)) +
+            stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
+            stat_summary(
+                fun.data = "mean_cl_normal",
+                geom = "errorbar",
+                linewidth = 0.25,
+                show.legend = FALSE
+            ) +
+            geom_jitter(position = position_jitter(height = 0, seed = 5)) +
+            ylab("LDH (U/L)") +
+            scale_x_discrete(
+                labels = c(
+                    "UPEC 7958" = "UPEC 7958 24h",
+                    "UPEC 7958 + G10400" = "UPEC 7958 + &Phi; G10400 24h",
+                    "G10400 24h" = "&Phi; G10400 24h",
+                    "Cells only 24h" = "Cells only 24h"
+                )
+            ) +
+            scale_y_continuous(
+                labels = label_number(),
+                expand = expansion(mult = c(0, 0.1)),
+                breaks = seq(0, 1000, 250)
+            ) +
+            expand_limits(y = 1000) +
+            theme_bw(base_size = 10) +
+            theme(
+                axis.title.x = element_blank(),
+                legend.position = "none",
+                axis.text.x = element_markdown()
+            ) +
+            geom_signif(
+                comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
+                annotations = "*",
+                size = 0.25,
+                textsize = 10 * 0.8 / .pt,
+                y_position = 1000,
+                tip_length = 0.025
+            ) +
+            scale_fill_okabe_ito()) +
+        plot_annotation(tag_levels = "A"),
+    width = 7,
+    height = 7,
+    units = "in",
+    dpi = 1200,
+    device = ragg::agg_png()
+)
 
 data3 <- bind_rows(
     read_excel(
@@ -354,61 +369,9 @@ data4 <- data4 %>%
             grepl("24h", name) ~ "2"
         )
     )
-
-(ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
-    stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
-    stat_summary(
-        fun.data = "mean_cl_normal",
-        geom = "errorbar",
-        linewidth = 0.25,
-        show.legend = FALSE
-    ) +
-    geom_jitter(position = position_jitter(height = 0, seed = 1)) +
-    facet_grid(
-        cols = vars(group),
-        scales = "free_x",
-        labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
-    ) +
-    expand_limits(y = 0) +
-    ylab("PFU/ml") +
-    scale_x_discrete(
-        labels = c(
-            "MM02 + UPEC 7958 3h" = expression(
-                "UPEC 7958 +" ~ Phi ~ "MM02"
-            ),
-            "MM02 cells only 3h" = expression(Phi ~ "MM02"),
-            "MM02 + UPEC 7958 24h" = expression(
-                "UPEC 7958 +" ~ Phi ~ "MM02"
-            ),
-            "MM02 cells only 24h" = expression(Phi ~ "MM02")
-        )
-    ) +
-    scale_y_continuous(
-        transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^3, 10^6),
-        labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.1))
-    ) +
-    expand_limits(y = 10^6.5) +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank(), legend.position = "none") +
-    suppressWarnings(geom_signif(
-        data = data.frame(
-            group = as.character(1),
-            start = "MM02 + UPEC 7958 3h",
-            end = "MM02 cells only 3h",
-            label = "**",
-            y = 6.5,
-            tip_length = 0.025
-        ),
-        aes(xmin = start, xmax = end, annotations = label, y_position = y),
-        manual = TRUE,
-        inherit.aes = FALSE,
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt
-    )) +
-    scale_fill_okabe_ito()) /
-    (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
+ggsave(
+    "Rplots-2.png",
+    (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -416,23 +379,20 @@ data4 <- data4 %>%
             linewidth = 0.25,
             show.legend = FALSE
         ) +
-        geom_jitter(position = position_jitter(height = 0, seed = 3)) +
+        geom_jitter(position = position_jitter(height = 0, seed = 1)) +
         facet_grid(
             cols = vars(group),
             scales = "free_x",
             labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
         ) +
+        expand_limits(y = 0) +
         ylab("PFU/ml") +
         scale_x_discrete(
             labels = c(
-                "G10400 + UPEC 8923 3h" = expression(
-                    "UPEC 8923 +" ~ Phi ~ "G10400"
-                ),
-                "G10400 cells only 3h" = expression(Phi ~ "G10400"),
-                "G10400 + UPEC 8923 24h" = expression(
-                    "UPEC 8923 +" ~ Phi ~ "G10400"
-                ),
-                "G10400 cells only 24h" = expression(Phi ~ "G10400")
+                "MM02 + UPEC 7958 3h" = "UPEC 7958 + &Phi; MM02",
+                "MM02 cells only 3h" = "&Phi; MM02",
+                "MM02 + UPEC 7958 24h" = "UPEC 7958 + &Phi; MM02",
+                "MM02 cells only 24h" = "&Phi; MM02"
             )
         ) +
         scale_y_continuous(
@@ -443,14 +403,18 @@ data4 <- data4 %>%
         ) +
         expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
-        theme(axis.title.x = element_blank(), legend.position = "none") +
+        theme(
+            axis.title.x = element_blank(),
+            legend.position = "none",
+            axis.text.x = element_markdown()
+        ) +
         suppressWarnings(geom_signif(
             data = data.frame(
-                group = as.character(1:2),
-                start = c("G10400 + UPEC 8923 3h", "G10400 + UPEC 8923 24h"),
-                end = c("G10400 cells only 3h", "G10400 cells only 24h"),
-                label = c("***", "***"),
-                y = c(6.5, 6.5),
+                group = as.character(1),
+                start = "MM02 + UPEC 7958 3h",
+                end = "MM02 cells only 3h",
+                label = "**",
+                y = 6.5,
                 tip_length = 0.025
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
@@ -459,8 +423,74 @@ data4 <- data4 %>%
             size = 0.25,
             textsize = 10 * 0.8 / .pt
         )) +
-        scale_fill_okabe_ito()) +
-    plot_annotation(tag_levels = "A")
+        scale_fill_okabe_ito()) /
+        (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
+            stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
+            stat_summary(
+                fun.data = "mean_cl_normal",
+                geom = "errorbar",
+                linewidth = 0.25,
+                show.legend = FALSE
+            ) +
+            geom_jitter(position = position_jitter(height = 0, seed = 3)) +
+            facet_grid(
+                cols = vars(group),
+                scales = "free_x",
+                labeller = as_labeller(c(`1` = "3 h", `2` = "24 h"))
+            ) +
+            ylab("PFU/ml") +
+            scale_x_discrete(
+                labels = c(
+                    "G10400 + UPEC 8923 3h" = "UPEC 8923 + &Phi; G10400",
+                    "G10400 cells only 3h" = "&Phi; G10400",
+                    "G10400 + UPEC 8923 24h" = "UPEC 8923 + &Phi; G10400",
+                    "G10400 cells only 24h" = "&Phi; G10400"
+                )
+            ) +
+            scale_y_continuous(
+                transform = transform_pseudo_log(base = 10),
+                breaks = c(0, 10^3, 10^6),
+                labels = label_log(base = 10),
+                expand = expansion(mult = c(0, 0.1))
+            ) +
+            expand_limits(y = 10^6.5) +
+            theme_bw(base_size = 10) +
+            theme(
+                axis.title.x = element_blank(),
+                legend.position = "none",
+                axis.text.x = element_markdown()
+            ) +
+            suppressWarnings(geom_signif(
+                data = data.frame(
+                    group = as.character(1:2),
+                    start = c(
+                        "G10400 + UPEC 8923 3h",
+                        "G10400 + UPEC 8923 24h"
+                    ),
+                    end = c("G10400 cells only 3h", "G10400 cells only 24h"),
+                    label = c("***", "***"),
+                    y = c(6.5, 6.5),
+                    tip_length = 0.025
+                ),
+                aes(
+                    xmin = start,
+                    xmax = end,
+                    annotations = label,
+                    y_position = y
+                ),
+                manual = TRUE,
+                inherit.aes = FALSE,
+                size = 0.25,
+                textsize = 10 * 0.8 / .pt
+            )) +
+            scale_fill_okabe_ito()) +
+        plot_annotation(tag_levels = "A"),
+    width = 7,
+    height = 7,
+    units = "in",
+    dpi = 1200,
+    device = ragg::agg_png()
+)
 
 data5 <- bind_rows(
     read_excel(
@@ -546,64 +576,71 @@ data5 <- data5 %>%
         )
     )
 
-ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
-    stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
-    stat_summary(
-        fun.data = "mean_cl_normal",
-        geom = "errorbar",
-        linewidth = 0.25,
-        show.legend = FALSE
-    ) +
-    geom_jitter(position = position_jitter(height = 0, seed = 2)) +
-    facet_grid(
-        cols = vars(group),
-        scales = "free_x",
-        labeller = as_labeller(
-            c(
-                `1` = "'1/24 h (' * varphi ~ '1.5/24 h)'",
-                `2` = "'0.5/24 h (' * varphi ~ '1/24 h)'"
-            ),
-            default = label_parsed
-        )
-    ) +
-    ylab("CFU/ml") +
-    scale_x_discrete(
-        labels = c(
-            "UPEC 1h" = "UPEC 8923",
-            "MM02 after 1,5h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 1.5h PI"
-            ),
-            "UPEC 0,5h" = "UPEC 8923",
-            "MM02 after 1h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 1h PI"
+ggsave(
+    "Rplots-3.png",
+    ggplot(data5, aes(name, value, fill = grepl("MM02", name))) +
+        stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
+        stat_summary(
+            fun.data = "mean_cl_normal",
+            geom = "errorbar",
+            linewidth = 0.25,
+            show.legend = FALSE
+        ) +
+        geom_jitter(position = position_jitter(height = 0, seed = 2)) +
+        facet_grid(
+            cols = vars(group),
+            scales = "free_x",
+            labeller = as_labeller(
+                c(
+                    `1` = "1/24 h (&phi; 1.5/24 h)",
+                    `2` = "0.5/24 h (&phi; 1/24 h)"
+                )
             )
-        )
-    ) +
-    scale_y_continuous(
-        transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^2, 10^4),
-        labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.1))
-    ) +
-    expand_limits(y = 10^4.5) +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank(), legend.position = "none") +
-    suppressWarnings(geom_signif(
-        data = data.frame(
-            group = as.character(1:2),
-            start = c("UPEC 1h", "UPEC 0,5h"),
-            end = c("MM02 after 1,5h", "MM02 after 1h"),
-            label = c("×0.74", "×0.64"),
-            y = c(4.5, 4.5),
-            tip_length = 0.025
-        ),
-        aes(xmin = start, xmax = end, annotations = label, y_position = y),
-        manual = TRUE,
-        inherit.aes = FALSE,
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt
-    )) +
-    scale_fill_okabe_ito()
+        ) +
+        ylab("CFU/ml") +
+        scale_x_discrete(
+            labels = c(
+                "UPEC 1h" = "UPEC 8923",
+                "MM02 after 1,5h" = "UPEC 8923 + &Phi; MM02 1.5h PI",
+                "UPEC 0,5h" = "UPEC 8923",
+                "MM02 after 1h" = "UPEC 8923 + &Phi; MM02 1h PI"
+            )
+        ) +
+        scale_y_continuous(
+            transform = transform_pseudo_log(base = 10),
+            breaks = c(0, 10^3, 10^6),
+            labels = label_log(base = 10),
+            expand = expansion(mult = c(0, 0.1))
+        ) +
+        expand_limits(y = 10^6.5) +
+        theme_bw(base_size = 10) +
+        theme(
+            axis.title.x = element_blank(),
+            legend.position = "none",
+            strip.text = element_markdown(),
+            axis.text.x = element_markdown()
+        ) +
+        suppressWarnings(geom_signif(
+            data = data.frame(
+                group = as.character(1:2),
+                start = c("UPEC 1h", "UPEC 0,5h"),
+                end = c("MM02 after 1,5h", "MM02 after 1h"),
+                label = c("×0.74", "×0.64"),
+                y = c(6.5, 6.5)
+            ),
+            aes(xmin = start, xmax = end, annotations = label, y_position = y),
+            manual = TRUE,
+            inherit.aes = FALSE,
+            size = 0.25,
+            textsize = 10 * 0.8 / .pt
+        )) +
+        scale_fill_okabe_ito(),
+    width = 7,
+    height = 3.5,
+    units = "in",
+    dpi = 1200,
+    device = ragg::agg_png()
+)
 
 data6 <- read_excel(
     "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
@@ -731,65 +768,9 @@ data7 <- data7 %>%
         )
     )
 
-(ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
-    stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
-    stat_summary(
-        fun.data = "mean_cl_normal",
-        geom = "errorbar",
-        linewidth = 0.25,
-        show.legend = FALSE
-    ) +
-    geom_jitter(position = position_jitter(height = 0, seed = 5)) +
-    facet_grid(
-        cols = vars(group),
-        scales = "free_x",
-        labeller = as_labeller(
-            c(
-                `1` = "'3/5 h (' * varphi ~ '3/5 h)'",
-                `2` = "'3/24 h (' * varphi ~ '5/24 h)'"
-            ),
-            default = label_parsed
-        )
-    ) +
-    ylab("CFU/ml") +
-    scale_x_discrete(
-        labels = c(
-            "Cells + UPEC 3h" = "UPEC 8923",
-            "Cells + UPEC + Phage 3h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 SIM"
-            ),
-            "Cells + UPEC 24h" = "UPEC 8923",
-            "Cells + UPEC + Phage 24/19h" = expression(
-                "UPEC 8923 +" ~ Phi ~ "MM02 5h PI"
-            )
-        )
-    ) +
-    scale_y_continuous(
-        transform = transform_pseudo_log(base = 10),
-        breaks = c(0, 10^3, 10^6),
-        labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.1))
-    ) +
-    expand_limits(y = 10^6.5) +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank(), legend.position = "none") +
-    scale_fill_okabe_ito() +
-    suppressWarnings(geom_signif(
-        data = data.frame(
-            group = as.character(1:2),
-            start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
-            end = c("Cells + UPEC + Phage 3h", "Cells + UPEC + Phage 24/19h"),
-            label = c("×0", "×1.38"),
-            y = c(6.5, 6.5),
-            tip_length = 0.025
-        ),
-        aes(xmin = start, xmax = end, annotations = label, y_position = y),
-        manual = TRUE,
-        inherit.aes = FALSE,
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt
-    ))) /
-    (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
+ggsave(
+    "Rplots-4.png",
+    (ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -803,23 +784,18 @@ data7 <- data7 %>%
             scales = "free_x",
             labeller = as_labeller(
                 c(
-                    `1` = "'3/5 h (' * varphi ~ '3/5 h)'",
-                    `2` = "'3/24 h (' * varphi ~ '5/24 h)'"
-                ),
-                default = label_parsed
+                    `1` = "3/5 h (&phi; 3/5 h)",
+                    `2` = "3/24 h (&phi; 5/24 h)"
+                )
             )
         ) +
         ylab("CFU/ml") +
         scale_x_discrete(
             labels = c(
-                "Cells + UPEC 3h" = "UPEC 7958",
-                "Cells + UPEC + Phage 3h" = expression(
-                    "UPEC 7958 +" ~ Phi ~ "G10400 SIM"
-                ),
-                "Cells + UPEC 24 h" = "UPEC 7958",
-                "Cells + UPEC + Phage 24/19 h" = expression(
-                    "UPEC 7958  +" ~ Phi ~ "G10400 5h PI"
-                )
+                "Cells + UPEC 3h" = "UPEC 8923",
+                "Cells + UPEC + Phage 3h" = "UPEC 8923 + &Phi; MM02 SIM",
+                "Cells + UPEC 24h" = "UPEC 8923",
+                "Cells + UPEC + Phage 24/19h" = "UPEC 8923 + &Phi; MM02 5h PI"
             )
         ) +
         scale_y_continuous(
@@ -830,17 +806,22 @@ data7 <- data7 %>%
         ) +
         expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
-        theme(axis.title.x = element_blank(), legend.position = "none") +
+        theme(
+            axis.title.x = element_blank(),
+            legend.position = "none",
+            strip.text = element_markdown(),
+            axis.text.x = element_markdown()
+        ) +
         scale_fill_okabe_ito() +
         suppressWarnings(geom_signif(
             data = data.frame(
                 group = as.character(1:2),
-                start = c("Cells + UPEC 3h", "Cells + UPEC 24 h"),
+                start = c("Cells + UPEC 3h", "Cells + UPEC 24h"),
                 end = c(
                     "Cells + UPEC + Phage 3h",
-                    "Cells + UPEC + Phage 24/19 h"
+                    "Cells + UPEC + Phage 24/19h"
                 ),
-                label = c("×0", "×0.92"),
+                label = c("×0", "×1.38"),
                 y = c(6.5, 6.5),
                 tip_length = 0.025
             ),
@@ -849,5 +830,77 @@ data7 <- data7 %>%
             inherit.aes = FALSE,
             size = 0.25,
             textsize = 10 * 0.8 / .pt
-        ))) +
-    plot_annotation(tag_levels = "A")
+        ))) /
+        (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
+            stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
+            stat_summary(
+                fun.data = "mean_cl_normal",
+                geom = "errorbar",
+                linewidth = 0.25,
+                show.legend = FALSE
+            ) +
+            geom_jitter(position = position_jitter(height = 0, seed = 5)) +
+            facet_grid(
+                cols = vars(group),
+                scales = "free_x",
+                labeller = as_labeller(
+                    c(
+                        `1` = "3/5 h (&phi; 3/5 h)",
+                        `2` = "3/24 h (&phi; 5/24 h)"
+                    )
+                )
+            ) +
+            ylab("CFU/ml") +
+            scale_x_discrete(
+                labels = c(
+                    "Cells + UPEC 3h" = "UPEC 7958",
+                    "Cells + UPEC + Phage 3h" = "UPEC 7958 + &Phi; G10400 SIM",
+                    "Cells + UPEC 24 h" = "UPEC 7958",
+                    "Cells + UPEC + Phage 24/19 h" = "UPEC 7958 + &Phi; G10400 5h PI"
+                )
+            ) +
+            scale_y_continuous(
+                transform = transform_pseudo_log(base = 10),
+                breaks = c(0, 10^3, 10^6),
+                labels = label_log(base = 10),
+                expand = expansion(mult = c(0, 0.1))
+            ) +
+            expand_limits(y = 10^6.5) +
+            theme_bw(base_size = 10) +
+            theme(
+                axis.title.x = element_blank(),
+                legend.position = "none",
+                strip.text = element_markdown(),
+                axis.text.x = element_markdown()
+            ) +
+            scale_fill_okabe_ito() +
+            suppressWarnings(geom_signif(
+                data = data.frame(
+                    group = as.character(1:2),
+                    start = c("Cells + UPEC 3h", "Cells + UPEC 24 h"),
+                    end = c(
+                        "Cells + UPEC + Phage 3h",
+                        "Cells + UPEC + Phage 24/19 h"
+                    ),
+                    label = c("×0", "×0.92"),
+                    y = c(6.5, 6.5),
+                    tip_length = 0.025
+                ),
+                aes(
+                    xmin = start,
+                    xmax = end,
+                    annotations = label,
+                    y_position = y
+                ),
+                manual = TRUE,
+                inherit.aes = FALSE,
+                size = 0.25,
+                textsize = 10 * 0.8 / .pt
+            ))) +
+        plot_annotation(tag_levels = "A"),
+    width = 7,
+    height = 7,
+    units = "in",
+    dpi = 1200,
+    device = ragg::agg_png()
+)

@@ -12,6 +12,8 @@ library(scales)
 
 library(ggsignif)
 
+library(ragg)
+
 data <- read_excel("data/Virucide excel.xlsx", range = "A1:D13")
 
 data <- data %>%
@@ -99,39 +101,50 @@ p <- p.adjust(
 
 p[p < 0.05]
 
-ggplot(data, aes(group, value, fill = group)) +
-    stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
-    stat_summary(
-        fun.data = "mean_cl_normal",
-        geom = "errorbar",
-        linewidth = 0.25,
-        show.legend = FALSE
-    ) +
-    geom_jitter(position = position_jitter(height = 0, seed = 2)) +
-    facet_grid(cols = vars(phage)) +
-    scale_x_discrete(labels = c("phage" = "P", "phage + virucide" = "P + V")) +
-    scale_y_continuous(
-        transform = "log10",
-        breaks = c(10^0, 10^3, 10^6, 10^9, 10^12),
-        labels = label_log(base = 10),
-        expand = expansion(mult = c(0, 0.05))
-    ) +
-    labs(y = "PFU/ml") +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank()) +
-    guides(fill = "none") +
-    scale_fill_okabe_ito() +
-    suppressWarnings(geom_signif(
-        data = data.frame(
-            phage = c("G10400", "G2494", "G9062", "MM02"),
-            start = "phage",
-            end = "phage + virucide",
-            label = c("**", "**", "**", "**"),
-            y = 13
-        ),
-        aes(xmin = start, xmax = end, annotations = label, y_position = y),
-        manual = TRUE,
-        inherit.aes = FALSE,
-        size = 0.25,
-        textsize = 10 * 0.8 / .pt
-    ))
+ggsave(
+    "Rplots-5.png",
+    ggplot(data, aes(group, value, fill = group)) +
+        stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
+        stat_summary(
+            fun.data = "mean_cl_normal",
+            geom = "errorbar",
+            linewidth = 0.25,
+            show.legend = FALSE
+        ) +
+        geom_jitter(position = position_jitter(height = 0, seed = 2)) +
+        facet_grid(cols = vars(phage)) +
+        scale_x_discrete(
+            labels = c("phage" = "P", "phage + virucide" = "P + V")
+        ) +
+        scale_y_continuous(
+            transform = "log10",
+            breaks = c(10^0, 10^3, 10^6, 10^9, 10^12),
+            labels = label_log(base = 10),
+            expand = expansion(mult = c(0, 0.05))
+        ) +
+        labs(y = "PFU/ml") +
+        theme_bw(base_size = 10) +
+        theme(axis.title.x = element_blank()) +
+        guides(fill = "none") +
+        scale_fill_okabe_ito() +
+        suppressWarnings(geom_signif(
+            data = data.frame(
+                phage = c("G10400", "G2494", "G9062", "MM02"),
+                start = "phage",
+                end = "phage + virucide",
+                label = c("**", "**", "**", "**"),
+                y = 13
+            ),
+            aes(xmin = start, xmax = end, annotations = label, y_position = y),
+            manual = TRUE,
+            inherit.aes = FALSE,
+            size = 0.25,
+            textsize = 10 * 0.8 / .pt,
+            tip_length = 0.025
+        )),
+    width = 7,
+    height = 7,
+    units = "in",
+    dpi = 1200,
+    device = ragg::agg_png()
+)
