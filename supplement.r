@@ -150,6 +150,7 @@ ggsave(
             inherit.aes = FALSE,
             size = 0.25,
             textsize = 10 * 0.8 / .pt,
+            family = "Arial",
             tip_length = 0.025
         )),
     width = 7,

@@ -139,6 +139,7 @@ ggsave(
             annotations = "*",
             size = 0.25,
             textsize = 10 * 0.8 / .pt,
+            family = "Arial",
             y_position = 1000,
             tip_length = 0.025
         ) +
@@ -179,6 +180,7 @@ ggsave(
                 annotations = "*",
                 size = 0.25,
                 textsize = 10 * 0.8 / .pt,
+                family = "Arial",
                 y_position = 1000,
                 tip_length = 0.025
             ) +
@@ -424,7 +426,8 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt
+            textsize = 10 * 0.8 / .pt,
+            family = "Arial"
         )) +
         scale_fill_okabe_ito()) /
         (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
@@ -485,7 +488,8 @@ ggsave(
                 manual = TRUE,
                 inherit.aes = FALSE,
                 size = 0.25,
-                textsize = 10 * 0.8 / .pt
+                textsize = 10 * 0.8 / .pt,
+                family = "Arial"
             )) +
             scale_fill_okabe_ito()) +
         plot_annotation(tag_levels = "A"),
@@ -637,7 +641,8 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt
+            textsize = 10 * 0.8 / .pt,
+            family = "Arial"
         )) +
         scale_fill_okabe_ito(),
     width = 7,
@@ -835,7 +840,8 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt
+            textsize = 10 * 0.8 / .pt,
+            family = "Arial"
         ))) /
         (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
             stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
@@ -902,7 +908,8 @@ ggsave(
                 manual = TRUE,
                 inherit.aes = FALSE,
                 size = 0.25,
-                textsize = 10 * 0.8 / .pt
+                textsize = 10 * 0.8 / .pt,
+                family = "Arial"
             ))) +
         plot_annotation(tag_levels = "A"),
     width = 7,
