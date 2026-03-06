@@ -129,6 +129,7 @@ ggsave(
         expand_limits(y = 1000) +
         theme_bw(base_size = 10) +
         theme(
+            text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
             legend.position = "none",
             axis.text.x = element_markdown()
@@ -168,6 +169,7 @@ ggsave(
             expand_limits(y = 1000) +
             theme_bw(base_size = 10) +
             theme(
+                text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
                 legend.position = "none",
                 axis.text.x = element_markdown()
@@ -404,6 +406,7 @@ ggsave(
         expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
         theme(
+            text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
             legend.position = "none",
             axis.text.x = element_markdown()
@@ -456,6 +459,7 @@ ggsave(
             expand_limits(y = 10^6.5) +
             theme_bw(base_size = 10) +
             theme(
+                text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
                 legend.position = "none",
                 axis.text.x = element_markdown()
@@ -615,6 +619,7 @@ ggsave(
         expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
         theme(
+            text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
             legend.position = "none",
             strip.text = element_markdown(),
@@ -807,6 +812,7 @@ ggsave(
         expand_limits(y = 10^6.5) +
         theme_bw(base_size = 10) +
         theme(
+            text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
             legend.position = "none",
             strip.text = element_markdown(),
@@ -868,6 +874,7 @@ ggsave(
             expand_limits(y = 10^6.5) +
             theme_bw(base_size = 10) +
             theme(
+                text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
                 legend.position = "none",
                 strip.text = element_markdown(),

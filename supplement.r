@@ -18,14 +18,21 @@ data <- read_excel("data/Virucide excel.xlsx", range = "A1:D13")
 
 data <- data %>%
     rename(phage = Phage) %>%
-    mutate(phage = replace_values(phage, "G2062" ~ "G9062"))
+    mutate(
+        phage = replace_values(
+            phage,
+            "G2062" ~ "G9062",
+            "Ac-L3" ~ "AC-L3",
+            "Ac-L3 + Virucide" ~ "AC-L3 + Virucide"
+        )
+    )
 
 data <- data %>%
     mutate(
         group = replace_values(
             phage,
-            "Ac-L3" ~ "phage",
-            "Ac-L3 + Virucide" ~ "phage + virucide",
+            "AC-L3" ~ "phage",
+            "AC-L3 + Virucide" ~ "phage + virucide",
             "G10400" ~ "phage",
             "G10400 + Virucide" ~ "phage + virucide",
             "G2494" ~ "phage",
@@ -41,8 +48,8 @@ data <- data %>%
     mutate(
         phage = replace_values(
             phage,
-            "Ac-L3" ~ "Ac-L3",
-            "Ac-L3 + Virucide" ~ "Ac-L3",
+            "AC-L3" ~ "AC-L3",
+            "AC-L3 + Virucide" ~ "AC-L3",
             "G10400" ~ "G10400",
             "G10400 + Virucide" ~ "G10400",
             "G2494" ~ "G2494",
@@ -71,7 +78,7 @@ p <- p.adjust(
         c(
             t.test(
                 I(log10(value)) ~ group,
-                data %>% filter(phage == "Ac-L3")
+                data %>% filter(phage == "AC-L3")
             )$p.value,
             t.test(
                 I(log10(value)) ~ group,
@@ -94,7 +101,7 @@ p <- p.adjust(
                 data %>% filter(phage == "WFH")
             )$p.value
         ),
-        c("Ac-L3", "G10400", "G2494", "G9062", "MM02", "WFH")
+        c("AC-L3", "G10400", "G2494", "G9062", "MM02", "WFH")
     ),
     method = "holm"
 )
@@ -124,7 +131,10 @@ ggsave(
         ) +
         labs(y = "PFU/ml") +
         theme_bw(base_size = 10) +
-        theme(axis.title.x = element_blank()) +
+        theme(
+            text = element_text(family = "Arial"),
+            axis.title.x = element_blank()
+        ) +
         guides(fill = "none") +
         scale_fill_okabe_ito() +
         suppressWarnings(geom_signif(
