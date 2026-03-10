@@ -415,11 +415,11 @@ ggsave(
         ) +
         suppressWarnings(geom_signif(
             data = data.frame(
-                group = as.character(1),
-                start = "MM02 + UPEC 7958 3h",
-                end = "MM02 cells only 3h",
-                label = "**",
-                y = 6.5,
+                group = as.character(1:2),
+                start = c("MM02 + UPEC 7958 3h", "MM02 + UPEC 7958 24h"),
+                end = c("MM02 cells only 3h", "MM02 cells only 24h"),
+                label = c("**", "ns"),
+                y = c(6.75, 6.75),
                 tip_length = 0.025
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
@@ -476,7 +476,7 @@ ggsave(
                     ),
                     end = c("G10400 cells only 3h", "G10400 cells only 24h"),
                     label = c("***", "***"),
-                    y = c(6.5, 6.5),
+                    y = c(6.75, 6.75),
                     tip_length = 0.025
                 ),
                 aes(
@@ -635,7 +635,7 @@ ggsave(
                 start = c("UPEC 1h", "UPEC 0,5h"),
                 end = c("MM02 after 1,5h", "MM02 after 1h"),
                 label = c("×0.74", "×0.64"),
-                y = c(6.5, 6.5)
+                y = c(6.75, 6.75)
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
             manual = TRUE,
@@ -833,7 +833,7 @@ ggsave(
                     "Cells + UPEC + Phage 24/19h"
                 ),
                 label = c("×0", "×1.38"),
-                y = c(6.5, 6.5),
+                y = c(6.75, 6.75),
                 tip_length = 0.025
             ),
             aes(xmin = start, xmax = end, annotations = label, y_position = y),
@@ -896,7 +896,7 @@ ggsave(
                         "Cells + UPEC + Phage 24/19 h"
                     ),
                     label = c("×0", "×0.92"),
-                    y = c(6.5, 6.5),
+                    y = c(6.75, 6.75),
                     tip_length = 0.025
                 ),
                 aes(
