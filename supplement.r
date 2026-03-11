@@ -14,6 +14,8 @@ library(ggsignif)
 
 library(ragg)
 
+library(ggtext)
+
 data <- read_excel("data/Virucide excel.xlsx", range = "A1:D13")
 
 data <- data %>%
@@ -121,7 +123,10 @@ ggsave(
         geom_jitter(position = position_jitter(height = 0, seed = 2)) +
         facet_grid(cols = vars(phage)) +
         scale_x_discrete(
-            labels = c("phage" = "P", "phage + virucide" = "P + V")
+            labels = c(
+                "phage" = "phage",
+                "phage + virucide" = "phage +<br>virucide"
+            )
         ) +
         scale_y_continuous(
             transform = "log10",
@@ -130,10 +135,11 @@ ggsave(
             expand = expansion(mult = c(0, 0.05))
         ) +
         labs(y = "PFU/ml") +
-        theme_bw(base_size = 10) +
+        theme_bw(base_size = 8) +
         theme(
             text = element_text(family = "Arial"),
-            axis.title.x = element_blank()
+            axis.title.x = element_blank(),
+            axis.text.x = element_markdown()
         ) +
         guides(fill = "none") +
         scale_fill_okabe_ito() +
@@ -149,12 +155,12 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt,
+            textsize = 8 * 0.8 / .pt,
             family = "Arial",
             tip_length = 0.025
         )),
     width = 7,
-    height = 7,
+    height = 3.5,
     units = "in",
     dpi = 1200,
     device = ragg::agg_png()

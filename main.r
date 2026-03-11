@@ -103,7 +103,7 @@ dunn.test(
 
 ggsave(
     "Rplots-1.png",
-    (ggplot(data1, aes(name, value, fill = name)) +
+    ((ggplot(data1, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -116,7 +116,7 @@ ggsave(
         scale_x_discrete(
             labels = c(
                 "UPEC 8923 24h" = "UPEC 8923 24h",
-                "UPEC 8923 + MM02 24h" = "UPEC 8923 + &Phi; MM02 24h",
+                "UPEC 8923 + MM02 24h" = "UPEC 8923 +<br>&Phi; MM02 24h",
                 "MM02 24h" = "&Phi; MM02 24h",
                 "Cells only 24h" = "Cells only 24h"
             )
@@ -127,7 +127,7 @@ ggsave(
             breaks = seq(0, 1000, 250)
         ) +
         expand_limits(y = 1000) +
-        theme_bw(base_size = 10) +
+        theme_bw(base_size = 8) +
         theme(
             text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
@@ -138,12 +138,12 @@ ggsave(
             comparisons = list(c("UPEC 8923 + MM02 24h", "UPEC 8923 24h")),
             annotations = "*",
             size = 0.25,
-            textsize = 10 * 0.8 / .pt,
+            textsize = 8 * 0.8 / .pt,
             family = "Arial",
             y_position = 1000,
             tip_length = 0.025
         ) +
-        scale_fill_okabe_ito()) /
+        scale_fill_okabe_ito()) |
         (ggplot(data2, aes(name, value, fill = name)) +
             stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
             stat_summary(
@@ -157,7 +157,7 @@ ggsave(
             scale_x_discrete(
                 labels = c(
                     "UPEC 7958" = "UPEC 7958 24h",
-                    "UPEC 7958 + G10400" = "UPEC 7958 + &Phi; G10400 24h",
+                    "UPEC 7958 + G10400" = "UPEC 7958 +<br>&Phi; G10400 24h",
                     "G10400 24h" = "&Phi; G10400 24h",
                     "Cells only 24h" = "Cells only 24h"
                 )
@@ -168,7 +168,7 @@ ggsave(
                 breaks = seq(0, 1000, 250)
             ) +
             expand_limits(y = 1000) +
-            theme_bw(base_size = 10) +
+            theme_bw(base_size = 8) +
             theme(
                 text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
@@ -179,15 +179,15 @@ ggsave(
                 comparisons = list(c("UPEC 7958", "UPEC 7958 + G10400")),
                 annotations = "*",
                 size = 0.25,
-                textsize = 10 * 0.8 / .pt,
+                textsize = 8 * 0.8 / .pt,
                 family = "Arial",
                 y_position = 1000,
                 tip_length = 0.025
             ) +
-            scale_fill_okabe_ito()) +
+            scale_fill_okabe_ito())) +
         plot_annotation(tag_levels = "A"),
     width = 7,
-    height = 7,
+    height = 3.5,
     units = "in",
     dpi = 1200,
     device = ragg::agg_png()
@@ -375,7 +375,7 @@ data4 <- data4 %>%
     )
 ggsave(
     "Rplots-2.png",
-    (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
+    ((ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -393,9 +393,9 @@ ggsave(
         ylab("PFU/ml") +
         scale_x_discrete(
             labels = c(
-                "MM02 + UPEC 7958 3h" = "UPEC 7958 + &Phi; MM02",
+                "MM02 + UPEC 7958 3h" = "UPEC 7958 +<br>&Phi; MM02",
                 "MM02 cells only 3h" = "&Phi; MM02",
-                "MM02 + UPEC 7958 24h" = "UPEC 7958 + &Phi; MM02",
+                "MM02 + UPEC 7958 24h" = "UPEC 7958 +<br>&Phi; MM02",
                 "MM02 cells only 24h" = "&Phi; MM02"
             )
         ) +
@@ -406,7 +406,7 @@ ggsave(
             expand = expansion(mult = c(0, 0.1))
         ) +
         expand_limits(y = 10^6.5) +
-        theme_bw(base_size = 10) +
+        theme_bw(base_size = 8) +
         theme(
             text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
@@ -426,10 +426,10 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt,
+            textsize = 8 * 0.8 / .pt,
             family = "Arial"
         )) +
-        scale_fill_okabe_ito()) /
+        scale_fill_okabe_ito()) |
         (ggplot(data4, aes(name, value, fill = grepl("cells only", name))) +
             stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
             stat_summary(
@@ -447,9 +447,9 @@ ggsave(
             ylab("PFU/ml") +
             scale_x_discrete(
                 labels = c(
-                    "G10400 + UPEC 8923 3h" = "UPEC 8923 + &Phi; G10400",
+                    "G10400 + UPEC 8923 3h" = "UPEC 8923 +<br>&Phi; G10400",
                     "G10400 cells only 3h" = "&Phi; G10400",
-                    "G10400 + UPEC 8923 24h" = "UPEC 8923 + &Phi; G10400",
+                    "G10400 + UPEC 8923 24h" = "UPEC 8923 +<br>&Phi; G10400",
                     "G10400 cells only 24h" = "&Phi; G10400"
                 )
             ) +
@@ -460,7 +460,7 @@ ggsave(
                 expand = expansion(mult = c(0, 0.1))
             ) +
             expand_limits(y = 10^6.5) +
-            theme_bw(base_size = 10) +
+            theme_bw(base_size = 8) +
             theme(
                 text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
@@ -488,13 +488,13 @@ ggsave(
                 manual = TRUE,
                 inherit.aes = FALSE,
                 size = 0.25,
-                textsize = 10 * 0.8 / .pt,
+                textsize = 8 * 0.8 / .pt,
                 family = "Arial"
             )) +
-            scale_fill_okabe_ito()) +
+            scale_fill_okabe_ito())) +
         plot_annotation(tag_levels = "A"),
     width = 7,
-    height = 7,
+    height = 3.5,
     units = "in",
     dpi = 1200,
     device = ragg::agg_png()
@@ -609,9 +609,9 @@ ggsave(
         scale_x_discrete(
             labels = c(
                 "UPEC 1h" = "UPEC 8923",
-                "MM02 after 1,5h" = "UPEC 8923 + &Phi; MM02 1.5h PI",
+                "MM02 after 1,5h" = "UPEC 8923 +<br>&Phi; MM02 1.5h PI",
                 "UPEC 0,5h" = "UPEC 8923",
-                "MM02 after 1h" = "UPEC 8923 + &Phi; MM02 1h PI"
+                "MM02 after 1h" = "UPEC 8923 +<br>&Phi; MM02 1h PI"
             )
         ) +
         scale_y_continuous(
@@ -621,7 +621,7 @@ ggsave(
             expand = expansion(mult = c(0, 0.1))
         ) +
         expand_limits(y = 10^6.5) +
-        theme_bw(base_size = 10) +
+        theme_bw(base_size = 8) +
         theme(
             text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
@@ -641,7 +641,7 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt,
+            textsize = 8 * 0.8 / .pt,
             family = "Arial"
         )) +
         scale_fill_okabe_ito(),
@@ -780,7 +780,7 @@ data7 <- data7 %>%
 
 ggsave(
     "Rplots-4.png",
-    (ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
+    ((ggplot(data6, aes(name, value, fill = grepl("Phage", name))) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
             fun.data = "mean_cl_normal",
@@ -803,9 +803,9 @@ ggsave(
         scale_x_discrete(
             labels = c(
                 "Cells + UPEC 3h" = "UPEC 8923",
-                "Cells + UPEC + Phage 3h" = "UPEC 8923 + &Phi; MM02 SIM",
+                "Cells + UPEC + Phage 3h" = "UPEC 8923 +<br>&Phi; MM02 SIM",
                 "Cells + UPEC 24h" = "UPEC 8923",
-                "Cells + UPEC + Phage 24/19h" = "UPEC 8923 + &Phi; MM02 5h PI"
+                "Cells + UPEC + Phage 24/19h" = "UPEC 8923 +<br>&Phi; MM02 5h PI"
             )
         ) +
         scale_y_continuous(
@@ -815,7 +815,7 @@ ggsave(
             expand = expansion(mult = c(0, 0.1))
         ) +
         expand_limits(y = 10^6.5) +
-        theme_bw(base_size = 10) +
+        theme_bw(base_size = 8) +
         theme(
             text = element_text(family = "Arial"),
             axis.title.x = element_blank(),
@@ -840,9 +840,9 @@ ggsave(
             manual = TRUE,
             inherit.aes = FALSE,
             size = 0.25,
-            textsize = 10 * 0.8 / .pt,
+            textsize = 8 * 0.8 / .pt,
             family = "Arial"
-        ))) /
+        ))) |
         (ggplot(data7, aes(name, value, fill = grepl("Phage", name))) +
             stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
             stat_summary(
@@ -866,9 +866,9 @@ ggsave(
             scale_x_discrete(
                 labels = c(
                     "Cells + UPEC 3h" = "UPEC 7958",
-                    "Cells + UPEC + Phage 3h" = "UPEC 7958 + &Phi; G10400 SIM",
+                    "Cells + UPEC + Phage 3h" = "UPEC 7958 +<br>&Phi; G10400 SIM",
                     "Cells + UPEC 24 h" = "UPEC 7958",
-                    "Cells + UPEC + Phage 24/19 h" = "UPEC 7958 + &Phi; G10400 5h PI"
+                    "Cells + UPEC + Phage 24/19 h" = "UPEC 7958 +<br>&Phi; G10400 5h PI"
                 )
             ) +
             scale_y_continuous(
@@ -878,7 +878,7 @@ ggsave(
                 expand = expansion(mult = c(0, 0.1))
             ) +
             expand_limits(y = 10^6.5) +
-            theme_bw(base_size = 10) +
+            theme_bw(base_size = 8) +
             theme(
                 text = element_text(family = "Arial"),
                 axis.title.x = element_blank(),
@@ -908,12 +908,12 @@ ggsave(
                 manual = TRUE,
                 inherit.aes = FALSE,
                 size = 0.25,
-                textsize = 10 * 0.8 / .pt,
+                textsize = 8 * 0.8 / .pt,
                 family = "Arial"
-            ))) +
+            )))) +
         plot_annotation(tag_levels = "A"),
     width = 7,
-    height = 7,
+    height = 3.5,
     units = "in",
     dpi = 1200,
     device = ragg::agg_png()
