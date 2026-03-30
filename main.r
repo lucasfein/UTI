@@ -233,7 +233,7 @@ data3 %>%
     summarise(SD = sd(value))
 
 result1 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data3 %>%
         filter(name == "MM02 + UPEC 7958 3h" | name == "MM02 cells only 3h")
 )
@@ -253,7 +253,7 @@ data3 %>%
 
 
 result2 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data3 %>%
         filter(name == "MM02 + UPEC 7958 24h" | name == "MM02 cells only 24h")
 )
@@ -314,7 +314,7 @@ data4 %>%
     summarise(SD = sd(value))
 
 result1 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data4 %>%
         filter(
             name == "G10400 + UPEC 8923 3h" | name == "G10400 cells only 3h"
@@ -339,7 +339,7 @@ data4 %>%
     summarise(SD = sd(value))
 
 result2 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data4 %>%
         filter(
             name == "G10400 + UPEC 8923 24h" | name == "G10400 cells only 24h"
@@ -540,7 +540,7 @@ data5 %>%
     summarise(SD = sd(value))
 
 result1 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data5 %>%
         filter(name == "UPEC 1h" | name == "MM02 after 1,5h")
 )
@@ -559,7 +559,7 @@ data5 %>%
     summarise(SD = sd(value))
 
 result2 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data5 %>%
         filter(name == "UPEC 0,5h" | name == "MM02 after 1h")
 )
@@ -694,7 +694,7 @@ data6 %>%
     summarise(SD = sd(value))
 
 result2 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data6 %>%
         filter(
             name == "Cells + UPEC 24h" | name == "Cells + UPEC + Phage 24/19h"
@@ -749,7 +749,7 @@ data7 %>%
     summarise(SD = sd(value))
 
 result2 <- t.test(
-    I(log10(value)) ~ fct_rev(name),
+    log10(value) ~ fct_rev(name),
     data = data7 %>%
         filter(
             name == "Cells + UPEC 24 h" | name == "Cells + UPEC + Phage 24/19 h"
