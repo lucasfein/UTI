@@ -106,7 +106,8 @@ ggsave(
     (ggplot(data1, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
-            fun.data = "mean_cl_normal",
+            fun.min = "min",
+            fun.max = "max",
             geom = "errorbar",
             linewidth = 0.25,
             show.legend = FALSE
@@ -147,7 +148,8 @@ ggsave(
         (ggplot(data2, aes(name, value, fill = name)) +
             stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
             stat_summary(
-                fun.data = "mean_cl_normal",
+                fun.min = "min",
+                fun.max = "max",
                 geom = "errorbar",
                 linewidth = 0.25,
                 show.legend = FALSE
