@@ -375,6 +375,7 @@ data4 <- data4 %>%
             grepl("24h", name) ~ "2"
         )
     )
+
 ggsave(
     "Rplots-2.png",
     (ggplot(data3, aes(name, value, fill = grepl("cells only", name))) +
