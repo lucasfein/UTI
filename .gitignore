@@ -1,8 +1,8 @@
-# Data
-data
-
 # PDF
-Rplots.pdf
+*.pdf
 
 # PNG
 *.png
+
+# EXCEL
+*.xlsx
