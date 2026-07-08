@@ -5,4 +5,4 @@ data
 Rplots.pdf
 
 # PNG
-Rplots-[0-9]*.png
+*.png
