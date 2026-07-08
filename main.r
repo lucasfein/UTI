@@ -16,8 +16,6 @@ library(dunn.test)
 
 library(ggokabeito)
 
-library(coin)
-
 library(ragg)
 library(ggtext)
 
