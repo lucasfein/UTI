@@ -9,7 +9,6 @@ library(forcats)
 library(scales)
 library(ggsignif)
 library(ggokabeito)
-library(Hmisc)
 
 data1 <- bind_rows(
   read_excel(
@@ -278,9 +277,7 @@ ggsave(
   (ggplot(data1, aes(name, value, fill = name)) +
     stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
     stat_summary(
-      fun.data = function(x) {
-        10^mean_cl_normal(log10(x + 1)) - 1
-      },
+      fun.data = "mean_cl_normal",
       geom = "errorbar",
       linewidth = 0.25,
       show.legend = FALSE
@@ -302,24 +299,26 @@ ggsave(
     ) +
     scale_y_continuous(
       name = "CFU/ml",
+      transform = transform_pseudo_log(),
       labels = label_log(),
       breaks = c(0, 10^3, 10^6, 10^9),
       expand = expansion(mult = c(0, 0.05))
     ) +
-    coord_transform(y = "pseudo_log") +
     scale_fill_okabe_ito() +
     theme_bw(base_size = 10) +
     theme(
       text = element_text(family = "Arial"),
       axis.text.x = element_markdown()
     ) +
+    coord_cartesian(ylim = c(0, NA)) +
     suppressWarnings(geom_signif(
       data = data.frame(
         condition = "1",
         start = "PC UPEC 7958",
         end = "UPEC 7958 + Phage G10400 MOI 0.01",
         label = "**",
-        y = 10^10
+        y = 24,
+        tip_length = 0.025
       ),
       aes(xmin = start, xmax = end, annotations = label, y_position = y),
       manual = TRUE,
@@ -331,9 +330,7 @@ ggsave(
     (ggplot(data2, aes(name, value, fill = name)) +
       stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
       stat_summary(
-        fun.data = function(x) {
-          10^mean_cl_normal(log10(x + 1)) - 1
-        },
+        fun.data = "mean_cl_normal",
         geom = "errorbar",
         linewidth = 0.25,
         show.legend = FALSE
@@ -355,17 +352,18 @@ ggsave(
       ) +
       scale_y_continuous(
         name = "CFU/ml",
+        transform = transform_pseudo_log(),
         labels = label_log(),
         breaks = c(0, 10^3, 10^6, 10^9),
         expand = expansion(mult = c(0, 0.05))
       ) +
-      coord_transform(y = "pseudo_log") +
       scale_fill_okabe_ito() +
       theme_bw(base_size = 10) +
       theme(
         text = element_text(family = "Arial"),
         axis.text.x = element_markdown()
       ) +
+      coord_cartesian(ylim = c(0, NA)) +
       suppressWarnings(geom_signif(
         data = data.frame(
           condition = "1",
@@ -375,7 +373,8 @@ ggsave(
             "UPEC 8923 + Phage MM02 MOI 0.01"
           ),
           label = c("*", "***"),
-          y = 10^c(9.5, 10)
+          y = c(22, 24),
+          tip_length = 0.025
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
