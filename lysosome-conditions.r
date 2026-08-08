@@ -317,8 +317,7 @@ ggsave(
         start = "PC UPEC 7958",
         end = "UPEC 7958 + Phage G10400 MOI 0.01",
         label = "**",
-        y = 24,
-        tip_length = 0.025
+        y = 25
       ),
       aes(xmin = start, xmax = end, annotations = label, y_position = y),
       manual = TRUE,
@@ -373,8 +372,7 @@ ggsave(
             "UPEC 8923 + Phage MM02 MOI 0.01"
           ),
           label = c("*", "***"),
-          y = c(22, 24),
-          tip_length = 0.025
+          y = c(22.5, 25)
         ),
         aes(xmin = start, xmax = end, annotations = label, y_position = y),
         manual = TRUE,
