@@ -1,1 +1,1 @@
-# R code for statistical analyses presented in ["Mechanistic insights into phage dynamics to overcome intracellular bacterial reservoirs in urinary tract infections"](https://doi.org/10.1038/s44298-026-00222-4)
+# R code used for the statistical analyses presented in ["Mechanistic insights into phage dynamics to overcome intracellular bacterial reservoirs in urinary tract infections"](https://doi.org/10.1038/s44298-026-00222-4)
