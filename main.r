@@ -101,7 +101,7 @@ dunn.test(
 )
 
 ggsave(
-    "Figure-6.png",
+    "figure-6.png",
     (ggplot(data1, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
@@ -376,7 +376,7 @@ data4 <- data4 %>%
     )
 
 ggsave(
-    "Figure-1.png",
+    "figure-1.png",
     (ggplot(
         data3 %>% filter(group == 1),
         aes(name, value, fill = grepl("cells only", name))
@@ -717,7 +717,7 @@ data5 <- data5 %>%
     )
 
 ggsave(
-    "Figure-4.png",
+    "figure-4.png",
     (ggplot(
         data5 %>% filter(group == 1),
         aes(name, value, fill = grepl("MM02", name))
@@ -980,7 +980,7 @@ data7 <- data7 %>%
     )
 
 ggsave(
-    "Figure-3.png",
+    "figure-3.png",
     (ggplot(
         data6 %>% filter(group == 1),
         aes(name, value, fill = grepl("Phage", name))
@@ -1534,7 +1534,7 @@ t.test(
 )
 
 ggsave(
-    "Figure-5.png",
+    "figure-5.png",
     (ggplot(data8, aes(name, value, fill = name)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(

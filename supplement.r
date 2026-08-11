@@ -109,7 +109,7 @@ p <- p.adjust(
 p[p < 0.05]
 
 ggsave(
-    "Figure-S1.png",
+    "figure-s1.png",
     ggplot(data, aes(group, value, fill = group)) +
         stat_summary(fun = "mean", geom = "bar", show.legend = FALSE) +
         stat_summary(
