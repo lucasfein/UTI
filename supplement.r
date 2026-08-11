@@ -1,4 +1,5 @@
 library(readxl)
+
 library(dplyr)
 library(tidyr)
 
@@ -6,10 +7,9 @@ library(forcats)
 
 library(ggplot2)
 
-library(ggokabeito)
-
 library(scales)
 
+library(ggokabeito)
 library(ggsignif)
 
 library(ragg)

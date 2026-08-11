@@ -1,3 +1,5 @@
+library(dunn.test)
+
 library(readxl)
 
 library(dplyr)
@@ -10,15 +12,13 @@ library(ggplot2)
 
 library(scales)
 
+library(ggokabeito)
 library(ggsignif)
+library(ggtext)
+
 library(patchwork)
 
-library(dunn.test)
-
-library(ggokabeito)
-
 library(ragg)
-library(ggtext)
 
 data1 <- read_excel(
     "data/LDH.xlsx",
