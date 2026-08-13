@@ -958,36 +958,6 @@ ggsave(
 
 data5 <- bind_rows(
   read_excel(
-    "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
-    sheet = "MM02",
-    range = "B15:G22",
-    col_names = FALSE,
-    .name_repair = "unique_quiet"
-  ) %>%
-    select(1, 6) %>%
-    rename(name = `...1`, value = `...6`),
-  read_excel(
-    "data/UTI Model Bacterial and phage counts.16.1.26xlsx.xlsx",
-    sheet = "MM02",
-    range = "B24:G29",
-    col_names = FALSE,
-    .name_repair = "unique_quiet"
-  ) %>%
-    select(1, 6) %>%
-    rename(name = `...1`, value = `...6`)
-) %>%
-  mutate(
-    name = fct_relevel(
-      sub("V[0-9] +(.+)", "\\1", name),
-      "UPEC 1h",
-      "MM02 after 1,5h",
-      "UPEC 0,5h",
-      "MM02 after 1h"
-    )
-  )
-
-data5 <- bind_rows(
-  read_excel(
     "44298_2026_222_MOESM2_ESM.xlsx",
     sheet = "MM02 invasion",
     range = "B15:G22",
